@@ -92,4 +92,4 @@ $ cd safeheron-api-sdk-python
     ```
 * Pytest
 
-  Execute `test_create_MPC_sign_transactions` unit in `/demo/api_demo/mpc_sign/mpc_sign_api_demo.py` Python file.
+  Execute `test_create_mpc_sign_transactions` unit in `/demo/api_demo/mpc_sign/mpc_sign_api_demo.py` Python file.
