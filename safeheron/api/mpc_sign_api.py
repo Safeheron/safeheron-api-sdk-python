@@ -62,16 +62,16 @@ class MPCSignApi:
 
     # Create an MPC Sign Transaction
     # Merchant can initiate MPC Sign via this interface. The merchant must first serialize the transaction data and generate a hash before using this interface to submit the hash and create a transaction. The resulting signature can be retrieved via the MPC Sign transaction interface or webhook. The merchant can proceed with the necessary follow-up processes to obtain the signature according to their specific needs.
-    def create_MPC_sign_transactions(self, request: CreateMPCSignTransactionRequest):
+    def create_mpc_sign_transactions(self, request: CreateMPCSignTransactionRequest):
         request.asDict()
         return api_client.send_request(request, '/v1/transactions/mpcsign/create')
 
     # Retrieve a Single MPC Sign Transaction
     # To query a specific MPC Sign transaction, either customerRefId or txKey must be provided. If both parameters are provided, the query will be based on the txKey parameter.
-    def one_MPCSign_transactions(self, request: OneMPCSignTransactionsRequest):
-        return api_client.send_request(request, '/v1/transactions/one')
+    def one_mpc_sign_transactions(self, request: OneMPCSignTransactionsRequest):
+        return api_client.send_request(request, '/v1/transactions/mpcsign/one')
 
     # MPC Sign Transaction List
     # Filter MPC Sign transaction history by various conditions.
-    def list_MPC_sign_transactions(self, request: ListMPCSignTransactionsRequest):
-        return api_client.send_request(request, '/v1/transactions/list')
+    def list_mpc_sign_transactions(self, request: ListMPCSignTransactionsRequest):
+        return api_client.send_request(request, '/v1/transactions/mpcsign/list')

@@ -1,4 +1,7 @@
 import yaml
+import sys
+
+sys.path.append('../../../../safeheron-api-sdk-python')
 from safeheron.api.transaction_api import *
 
 
