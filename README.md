@@ -1,4 +1,4 @@
-# Python for Safeheron API
+# Python SDK for Safeheron API
 
 ![GitHub last commit](https://img.shields.io/github/last-commit/Safeheron/safeheron-api-sdk-python)
 ![GitHub top language](https://img.shields.io/github/languages/top/Safeheron/safeheron-api-sdk-python?color=red)
@@ -6,11 +6,10 @@
 # API Documentation
 - [Official documentation](https://docs.safeheron.com/api/index.html)
 
-# Usage
-## Download and build
+# Installation
+
 ```shell
-$ git clone https://github.com/Safeheron/safeheron-api-sdk-python.git
-$ cd safeheron-api-sdk-python
+$ pip install safeheron-api-sdk-python
 ```
 
 # Test

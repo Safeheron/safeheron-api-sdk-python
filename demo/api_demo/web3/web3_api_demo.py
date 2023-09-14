@@ -1,8 +1,8 @@
 import yaml
 import sys
 
-sys.path.append('../../../../safeheron-api-sdk-python')
-from safeheron.api.web3_api import *
+sys.path.append('../../../../safeheron_api_sdk_python')
+from safeheron_api_sdk_python.api.web3_api import *
 from web3 import Web3
 
 import uuid

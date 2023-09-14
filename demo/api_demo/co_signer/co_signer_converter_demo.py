@@ -1,8 +1,8 @@
 import yaml
 import sys
 
-sys.path.append('../../../../safeheron-api-sdk-python')
-from safeheron.cosigner.co_signer_converter import *
+sys.path.append('../../../../safeheron_api_sdk_python')
+from safeheron_api_sdk_python.cosigner.co_signer_converter import *
 
 
 def read_yaml(file_path):
