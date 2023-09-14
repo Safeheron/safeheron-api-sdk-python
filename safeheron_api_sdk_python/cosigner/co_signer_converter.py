@@ -1,7 +1,7 @@
 import sys
 
 sys.path.pop(0)
-from safeheron.tools import *
+from safeheron_api_sdk_python.tools import *
 
 
 class CoSignerResponse:

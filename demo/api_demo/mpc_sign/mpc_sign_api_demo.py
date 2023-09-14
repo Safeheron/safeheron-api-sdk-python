@@ -2,8 +2,8 @@ import yaml
 import sys
 from web3 import Web3
 
-sys.path.append('../../../../safeheron-api-sdk-python')
-from safeheron.api.mpc_sign_api import *
+sys.path.append('../../../../safeheron_api_sdk_python')
+from safeheron_api_sdk_python.api.mpc_sign_api import *
 
 import uuid
 from eth_account._utils.legacy_transactions import (

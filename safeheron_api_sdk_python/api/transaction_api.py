@@ -1,7 +1,7 @@
 import sys
 
 sys.path.pop(0)
-from safeheron.client import *
+from safeheron_api_sdk_python.client import *
 
 
 class ListTransactionsV1Request:
