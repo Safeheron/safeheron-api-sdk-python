@@ -9,8 +9,7 @@
 # Usage
 ## Download and build
 ```shell
-$ git clone https://github.com/Safeheron/safeheron-api-sdk-python.git
-$ cd safeheron-api-sdk-python
+$ pip install safeheron-api-sdk-python
 ```
 
 # Test
