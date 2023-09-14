@@ -1,4 +1,4 @@
-# Python for Safeheron API
+# Python SDK for Safeheron API
 
 ![GitHub last commit](https://img.shields.io/github/last-commit/Safeheron/safeheron-api-sdk-python)
 ![GitHub top language](https://img.shields.io/github/languages/top/Safeheron/safeheron-api-sdk-python?color=red)
