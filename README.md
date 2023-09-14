@@ -6,8 +6,8 @@
 # API Documentation
 - [Official documentation](https://docs.safeheron.com/api/index.html)
 
-# Usage
-## Download and build
+# Installation
+
 ```shell
 $ pip install safeheron-api-sdk-python
 ```
