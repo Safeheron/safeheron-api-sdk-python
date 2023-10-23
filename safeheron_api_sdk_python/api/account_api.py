@@ -30,6 +30,8 @@ class CreateAccountRequest:
         # False: display
         # Default: false
         self.hiddenOnUI = None
+        # Account tag
+        self.accountTag = None
 
 
 class BatchCreateAccountRequest:
@@ -38,6 +40,8 @@ class BatchCreateAccountRequest:
         self.accountName = None
         # Number of wallets to be created, greater than 0, less than 100
         self.count = None
+        # Account tag
+        self.accountTag = None
 
 
 class UpdateAccountShowStateRequest:
@@ -49,6 +53,13 @@ class UpdateAccountShowStateRequest:
         # False: display
         # Default: false
         self.hiddenOnUI = None
+
+class BatchUpdateAccountTagRequest:
+    def __init__(self):
+        # Wallet account key
+        self.accountKey = None
+        # Account tag
+        self.accountTag = None
 
 
 class CreateAccountCoinRequest:
@@ -154,6 +165,12 @@ class AccountApi:
     # Change wallet account status in Safeheron App.
     def update_account_show_state(self, request: UpdateAccountShowStateRequest):
         return api_client.send_request(request, '/v1/account/update/show/state')
+
+    # Batch Label Wallet Accounts
+    # Relabel a batch of wallet accounts.
+    # Please note that it only supports to label wallets which are created by API. And, the wallets have been used to sweep the target account cannot be relabelled.
+    def batch_update_account_tag(self, request: BatchUpdateAccountTagRequest):
+        return api_client.send_request(request, '/v1/account/batch/update/tag')
 
     # Add Coins to a Wallet Account
     # Add a new coin to your wallet account, while generating the default address group for the added coin. Once successfully completed, it will return the address information of the newly created default address group. In case the added currency already exists within the account, it will promptly return the existing default address group information for that coin.
