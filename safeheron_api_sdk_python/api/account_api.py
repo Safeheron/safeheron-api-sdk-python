@@ -32,6 +32,8 @@ class CreateAccountRequest:
         self.hiddenOnUI = None
         # Account tag
         self.accountTag = None
+        # Coin key list, 20 array elements max
+        self.coinKeyList = None
 
 
 class BatchCreateAccountRequest:
@@ -75,7 +77,7 @@ class BatchCreateAccountCoinRequest:
         # Coin key
         self.coinKey = None
         # Account key, max is 100
-        self.accountKey = None
+        self.accountKeyList = None
         # Address group name, 30 characters max
         self.addressGroupName = None
 
