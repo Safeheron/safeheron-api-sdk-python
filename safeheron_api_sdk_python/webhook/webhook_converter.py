@@ -13,9 +13,9 @@ class WebhookConverter:
         if 'webHookRsaPrivateKey' in config:
             web_hook_rsa_private_key = PEM_PRIVATE_HEAD + config['webHookRsaPrivateKey'] + PEM_PRIVATE_END
         if 'webHookRsaPrivateKeyPemFile' in config:
-            private_key_pe_file = config['webHookRsaPrivateKeyPemFile']
-            if private_key_pe_file is not None and private_key_pe_file != '':
-                web_hook_rsa_private_key = load_rsa_private_key(private_key_pe_file)
+            private_key_pem_file = config['webHookRsaPrivateKeyPemFile']
+            if private_key_pem_file is not None and private_key_pem_file != '':
+                web_hook_rsa_private_key = load_rsa_private_key(private_key_pem_file)
 
     def converter(self, webhook):
         platform_rsa_pk = get_rsa_key(PEM_PUBLIC_HEAD + safeheron_webHook_rsa_public_key + PEM_PUBLIC_END)

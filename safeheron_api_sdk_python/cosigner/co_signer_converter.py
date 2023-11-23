@@ -21,9 +21,9 @@ class CoSignerConverter:
         if 'bizPrivKey' in config:
             biz_privKey = PEM_PRIVATE_HEAD + config['bizPrivKey'] + PEM_PRIVATE_END
         if 'bizPrivKeyPemFile' in config:
-            private_key_pe_file = config['bizPrivKeyPemFile']
-            if private_key_pe_file is not None and private_key_pe_file != '':
-                biz_privKey = load_rsa_private_key(private_key_pe_file)
+            private_key_pem_file = config['bizPrivKeyPemFile']
+            if private_key_pem_file is not None and private_key_pem_file != '':
+                biz_privKey = load_rsa_private_key(private_key_pem_file)
 
     def request_convert(self, co_signer_call_back):
         platform_rsa_pk = get_rsa_key(PEM_PUBLIC_HEAD + api_pub_key + PEM_PUBLIC_END)
