@@ -18,11 +18,16 @@ class CoSignerConverter:
         global api_pub_key
         global biz_privKey
         api_pub_key = config['apiPubKey']
-        biz_privKey = config['bizPrivKey']
+        if 'bizPrivKey' in config:
+            biz_privKey = PEM_PRIVATE_HEAD + config['bizPrivKey'] + PEM_PRIVATE_END
+        if 'bizPrivKeyPemFile' in config:
+            private_key_pem_file = config['bizPrivKeyPemFile']
+            if private_key_pem_file is not None and private_key_pem_file != '':
+                biz_privKey = load_rsa_private_key(private_key_pem_file)
 
     def request_convert(self, co_signer_call_back):
         platform_rsa_pk = get_rsa_key(PEM_PUBLIC_HEAD + api_pub_key + PEM_PUBLIC_END)
-        api_user_rsa_sk = get_rsa_key(PEM_PRIVATE_HEAD + biz_privKey + PEM_PRIVATE_END)
+        api_user_rsa_sk = get_rsa_key(biz_privKey)
         required_keys = {
             'key',
             'sig',

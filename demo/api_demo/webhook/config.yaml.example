@@ -1,4 +1,6 @@
-# Your WebHook Rsa Private Key
+# Your WebHook Rsa Private Key, as an alternative, you can use webHookRsaPrivateKeyPemFile to config your webHookRsaPrivateKey
 webHookRsaPrivateKey: MIIJRQIBA*******DtGRBdennqu8g95jcrMxCUhsifVgzP6vUyg==
+# path to your private key file, pem encoded. WebHookRsaPrivateKeyPemFile priority is higher than webHookRsaPrivateKey.
+webHookRsaPrivateKeyPemFile: './my_private.pem'
 # Safeheron WebHook Platform Public Key, you can get it from Safeheron Web Console: https://www.safeheron.com/console.
 safeheronWebHookRsaPublicKey: MIICI****QuTOTECAwEAAQ==

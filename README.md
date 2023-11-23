@@ -19,8 +19,10 @@ $ pip install safeheron-api-sdk-python
     ```yaml
     # Your api key, you can get it from Safeheron Web Console: https://www.safeheron.com/console.
     apiKey: 080d****e06e60
-    # Your private key
+    # Your private key, as an alternative, you can use privateKeyPemFile to config your private key
     privateKey: MIIJRQIBA*******DtGRBdennqu8g95jcrMxCUhsifVgzP6vUyg==
+    # path to your private key file, pem encoded.PrivateKeyPemFile priority is higher than privateKey.
+    privateKeyPemFile: './my_private.pem'
     # Safeheron API public key, you can get it from Safeheron Web Console: https://www.safeheron.com/console.
     safeheronPublicKey: MIICI****QuTOTECAwEAAQ==
     # Safeheron API url
@@ -40,8 +42,10 @@ $ pip install safeheron-api-sdk-python
     ```yaml
     # Your api key, you can get it from Safeheron Web Console: https://www.safeheron.com/console.
     apiKey: 080d****e06e60
-    # Your private key
+    # Your private key, as an alternative, you can use privateKeyPemFile to config your private key
     privateKey: MIIJRQIBA*******DtGRBdennqu8g95jcrMxCUhsifVgzP6vUyg==
+    # path to your private key file, pem encoded.PrivateKeyPemFile priority is higher than privateKey.
+    privateKeyPemFile: './my_private.pem'
     # Safeheron API public key, you can get it from Safeheron Web Console: https://www.safeheron.com/console.
     safeheronPublicKey: MIICI****QuTOTECAwEAAQ==
     # Safeheron API url
@@ -66,8 +70,10 @@ $ pip install safeheron-api-sdk-python
     ```yaml
     # Your api key, you can get it from Safeheron Web Console: https://www.safeheron.com/console.
     apiKey: 080d****e06e60
-    # Your private key
+    # Your private key, as an alternative, you can use privateKeyPemFile to config your private key
     privateKey: MIIJRQIBA*******DtGRBdennqu8g95jcrMxCUhsifVgzP6vUyg==
+    # path to your private key file, pem encoded.PrivateKeyPemFile priority is higher than privateKey.
+    privateKeyPemFile: './my_private.pem'
     # Safeheron API public key, you can get it from Safeheron Web Console: https://www.safeheron.com/console.
     safeheronPublicKey: MIICI****QuTOTECAwEAAQ==
     # Safeheron API url

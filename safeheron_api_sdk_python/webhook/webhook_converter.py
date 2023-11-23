@@ -10,11 +10,16 @@ class WebhookConverter:
         global safeheron_webHook_rsa_public_key
         global web_hook_rsa_private_key
         safeheron_webHook_rsa_public_key = config['safeheronWebHookRsaPublicKey']
-        web_hook_rsa_private_key = config['webHookRsaPrivateKey']
+        if 'webHookRsaPrivateKey' in config:
+            web_hook_rsa_private_key = PEM_PRIVATE_HEAD + config['webHookRsaPrivateKey'] + PEM_PRIVATE_END
+        if 'webHookRsaPrivateKeyPemFile' in config:
+            private_key_pem_file = config['webHookRsaPrivateKeyPemFile']
+            if private_key_pem_file is not None and private_key_pem_file != '':
+                web_hook_rsa_private_key = load_rsa_private_key(private_key_pem_file)
 
     def converter(self, webhook):
         platform_rsa_pk = get_rsa_key(PEM_PUBLIC_HEAD + safeheron_webHook_rsa_public_key + PEM_PUBLIC_END)
-        api_user_rsa_sk = get_rsa_key(PEM_PRIVATE_HEAD + web_hook_rsa_private_key + PEM_PRIVATE_END)
+        api_user_rsa_sk = get_rsa_key(web_hook_rsa_private_key)
         required_keys = {
             'key',
             'sig',
