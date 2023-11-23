@@ -9,8 +9,13 @@ class Client:
         global base_url
         api_key = config['apiKey']
         platform_pub_key = config['safeheronPublicKey']
-        use_private_key = config['privateKey']
         base_url = config['baseUrl']
+        if 'privateKey' in config:
+            use_private_key = PEM_PRIVATE_HEAD + config['privateKey'] + PEM_PRIVATE_END
+        if 'privateKeyPemFile' in config:
+            private_key_pem_file = config['privateKeyPemFile']
+            if private_key_pem_file is not None and private_key_pem_file != '':
+                use_private_key = load_rsa_private_key(private_key_pem_file)
 
     def send_request(self, request, uri):
         req = encrypt_request(api_key, request, platform_pub_key, use_private_key)

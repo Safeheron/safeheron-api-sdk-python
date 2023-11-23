@@ -11,6 +11,8 @@ from Cryptodome import Random
 import json
 import time
 import requests
+from cryptography.hazmat.primitives import serialization
+from cryptography.hazmat.backends import default_backend
 
 
 PEM_PUBLIC_HEAD = "-----BEGIN PUBLIC KEY-----\n"
@@ -18,6 +20,19 @@ PEM_PUBLIC_END = "\n-----END PUBLIC KEY-----"
 PEM_PRIVATE_HEAD = "-----BEGIN RSA PRIVATE KEY-----\n"
 PEM_PRIVATE_END = "\n-----END RSA PRIVATE KEY-----"
 
+def load_rsa_private_key(file_path, password=None):
+    with open(file_path, "rb") as key_file:
+        private_key = serialization.load_pem_private_key(
+            key_file.read(),
+            password=password,
+            backend=default_backend()
+        )
+    pem = private_key.private_bytes(
+        encoding=serialization.Encoding.PEM,
+        format=serialization.PrivateFormat.PKCS8,
+        encryption_algorithm=serialization.NoEncryption()
+    )
+    return pem.decode()
 
 def check_key_and_iv(key: bytes, iv: bytes):
     if len(key) != 32:
@@ -113,7 +128,7 @@ def sort_request(r: dict):
 
 def encrypt_request(api_key, request_dict, platform_rsa_pk, api_user_rsa_sk):
     platform_rsa_pk = get_rsa_key(PEM_PUBLIC_HEAD + platform_rsa_pk + PEM_PUBLIC_END)
-    api_user_rsa_sk = get_rsa_key(PEM_PRIVATE_HEAD + api_user_rsa_sk +PEM_PRIVATE_END)
+    api_user_rsa_sk = get_rsa_key(api_user_rsa_sk)
 
     ret = dict()
 
@@ -146,7 +161,7 @@ def encrypt_request(api_key, request_dict, platform_rsa_pk, api_user_rsa_sk):
 
 def decrypt_response(response_dict, platform_rsa_pk, api_user_rsa_sk):
     platform_rsa_pk = get_rsa_key(PEM_PUBLIC_HEAD + platform_rsa_pk + PEM_PUBLIC_END)
-    api_user_rsa_sk = get_rsa_key(PEM_PRIVATE_HEAD + api_user_rsa_sk +PEM_PRIVATE_END)
+    api_user_rsa_sk = get_rsa_key(api_user_rsa_sk)
     required_keys = {
         'key',
         'sig',
@@ -181,7 +196,7 @@ def decrypt_response(response_dict, platform_rsa_pk, api_user_rsa_sk):
 #用于webhook解密回调请求数据
 def decrypt_request(response_dict, verify_rsa_pk, decrypt_rsa_sk):
     verify_rsa_pk = get_rsa_key(PEM_PUBLIC_HEAD + verify_rsa_pk + PEM_PUBLIC_END)
-    decrypt_rsa_sk = get_rsa_key(PEM_PRIVATE_HEAD + decrypt_rsa_sk +PEM_PRIVATE_END)
+    decrypt_rsa_sk = get_rsa_key(decrypt_rsa_sk)
     # 1 rsa verify
     sig = response_dict.pop('sig')
     need_sign_message = sort_request(response_dict)
@@ -202,7 +217,7 @@ def decrypt_request(response_dict, verify_rsa_pk, decrypt_rsa_sk):
 #用于webhook发送加密响应内容
 def encrypt_response(raw_data,encrpyt_rsa_pk, sign_rsa_sk):
     encrpyt_rsa_pk = get_rsa_key(PEM_PUBLIC_HEAD + encrpyt_rsa_pk + PEM_PUBLIC_END)
-    sign_rsa_sk = get_rsa_key(PEM_PRIVATE_HEAD + sign_rsa_sk +PEM_PRIVATE_END)
+    sign_rsa_sk = get_rsa_key(sign_rsa_sk)
     ret = dict()
     # prepare aes key and iv
     aes_key = get_random_bytes(32)
