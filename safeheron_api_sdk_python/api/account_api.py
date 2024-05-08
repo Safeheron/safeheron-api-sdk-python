@@ -40,6 +40,11 @@ class BatchCreateAccountRequest:
     def __init__(self):
         # The prefix of wallet account name, 30 characters max
         self.accountName = None
+        # Display status in Safeheron App
+        # True: not display
+        # False: display
+        # Default: true
+        self.hiddenOnUI = None
         # Number of wallets to be created, greater than 0, less than 100
         self.count = None
         # Account tag

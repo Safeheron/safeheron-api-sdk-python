@@ -32,6 +32,15 @@ class WebhookConverter:
             raise Exception(webhook)
 
         # 1 rsa verify
+        if "rsaType" in webhook:
+            rsaType = webhook.pop('rsaType')
+        else:
+            rsaType = RSA_TYPE
+
+        if "aesType" in webhook:
+            aesType = webhook.pop('aesType')
+        else:
+            aesType = CBC_TYPE
         sig = webhook.pop('sig')
         need_sign_message = sort_request(webhook)
         v = rsa_verify(platform_rsa_pk, need_sign_message, sig)
@@ -40,12 +49,18 @@ class WebhookConverter:
 
         # 2 get aes key and iv
         key = webhook.pop('key')
-        aes_data = rsa_decrypt(api_user_rsa_sk, key)
+        if ECB_OAEP_TYPE == rsaType:
+            aes_data = rsa_oape_decrypt(api_user_rsa_sk, key)
+        else:
+            aes_data = rsa_decrypt(api_user_rsa_sk, key)
         aes_key = aes_data[0:32]
         aes_iv = aes_data[32:48]
 
         # 3 aes decrypt data, get response data
-        r = aes_decrypt(aes_key, aes_iv, b64decode(webhook['bizContent']))
+        if GCM_TYPE == aesType:
+            r = aes_gcm_decrypt(aes_key, aes_iv, b64decode(webhook['bizContent']))
+        else:
+            r = aes_decrypt(aes_key, aes_iv, b64decode(webhook['bizContent']))
         # response_dict['bizContent'] = json.loads(r.decode())
 
         return json.loads(r.decode())

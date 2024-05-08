@@ -14,7 +14,7 @@ class TestTransaction:
 
     def test_create_transactions(self):
         config = read_yaml("./config.yaml")
-        coin_api = TransactionApi(config)
+        transaction_api = TransactionApi(config)
         param = RecreateTransactionRequest()
 
         param.coinKey = "ETH_GOERLI"
@@ -26,5 +26,5 @@ class TestTransaction:
         param.destinationAddress = "0xFA8667a81*************350d35ecaeEF7"
         param.customerRefId = "{{customerRefId}}"
 
-        res = coin_api.create_transactions(param)
+        res = transaction_api.create_transactions(param)
         print(res)

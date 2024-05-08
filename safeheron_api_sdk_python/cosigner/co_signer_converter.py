@@ -40,6 +40,15 @@ class CoSignerConverter:
             raise Exception(co_signer_call_back)
 
         # 1 rsa verify
+        if "rsaType" in co_signer_call_back:
+            rsaType = co_signer_call_back.pop('rsaType')
+        else:
+            rsaType = RSA_TYPE
+
+        if "aesType" in co_signer_call_back:
+            aesType = co_signer_call_back.pop('aesType')
+        else:
+            aesType = CBC_TYPE
         sig = co_signer_call_back.pop('sig')
         need_sign_message = sort_request(co_signer_call_back)
         v = rsa_verify(platform_rsa_pk, need_sign_message, sig)
@@ -48,12 +57,18 @@ class CoSignerConverter:
 
         # 2 get aes key and iv
         key = co_signer_call_back.pop('key')
-        aes_data = rsa_decrypt(api_user_rsa_sk, key)
+        if ECB_OAEP_TYPE == rsaType:
+            aes_data = rsa_oape_decrypt(api_user_rsa_sk, key)
+        else:
+            aes_data = rsa_decrypt(api_user_rsa_sk, key)
         aes_key = aes_data[0:32]
         aes_iv = aes_data[32:48]
 
         # 3 aes decrypt data, get response data
-        r = aes_decrypt(aes_key, aes_iv, b64decode(co_signer_call_back['bizContent']))
+        if GCM_TYPE == aesType:
+            r = aes_gcm_decrypt(aes_key, aes_iv, b64decode(co_signer_call_back['bizContent']))
+        else:
+            r = aes_decrypt(aes_key, aes_iv, b64decode(co_signer_call_back['bizContent']))
         # response_dict['bizContent'] = json.loads(r.decode())
 
         return json.loads(r.decode())
