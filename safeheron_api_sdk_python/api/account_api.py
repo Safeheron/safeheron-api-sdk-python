@@ -160,7 +160,8 @@ class AccountApi:
     def list_accounts(self, request: ListAccountRequest):
         return self.api_client.send_request(request, '/v1/account/list')
 
-    # One Wallet Accounts
+    # Retrieve a Single Wallet Account
+    # Retrieve a single wallet account in the team by providing accountKey.
     def one_accounts(self, request: OneAccountRequest):
         return self.api_client.send_request(request, '/v1/account/one')
 
