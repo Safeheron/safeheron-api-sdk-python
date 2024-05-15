@@ -315,51 +315,50 @@ class CollectionTransactionsUTXORequest:
 class TransactionApi:
 
     def __init__(self, config):
-        global api_client
-        api_client = Client(config)
+        self.api_client = Client(config)
 
     # Transaction List V1
     # Filter transaction history by various conditions. For optimal results, we recommend using the V2 version.
     def list_transactions_v1(self, request: ListTransactionsV1Request):
-        return api_client.send_request(request, '/v1/transactions/list')
+        return self.api_client.send_request(request, '/v1/transactions/list')
 
     # Transaction List V2
     # Filter transaction history by various conditions.
     def list_transactions_v2(self, request: ListTransactionsV2Request):
-        return api_client.send_request(request, '/v2/transactions/list')
+        return self.api_client.send_request(request, '/v2/transactions/list')
 
     # Create a new transaction.
     def create_transactions(self, request: CreateTransactionRequest):
         request.asDict()
-        return api_client.send_request(request, '/v2/transactions/create')
+        return self.api_client.send_request(request, '/v2/transactions/create')
 
     # For UTXOs that natively support multiple OUTPUTs, this interface allows a single transaction to transfer funds to multiple destination addresses simultaneously.(To use the Co-Signer, please use version 1.5.9 or higher)
     def create_transactions_UTXO_multidest(self, request: CreateTransactionsUTXOMultidestRequest):
         request.asDict()
-        return api_client.send_request(request, '/v1/transactions/utxo/multidest/create')
+        return self.api_client.send_request(request, '/v1/transactions/utxo/multidest/create')
 
     # Speed up EVM and UTXO-based Transactions
     # Transactions with low transaction fees and those that have been pending for a long time can be sped up. EVM-based and BTC transactions can be sped up through RBF(If 'isRbf' is set to true during transaction creation, the transaction will be accelerated using RBF acceleration. Otherwise, CPFP acceleration will be used.) For other UTXO-based transactions, CPFP will be used.
     def recreate_transactions(self, request: RecreateTransactionRequest):
         request.asDict()
-        return api_client.send_request(request, '/v2/transactions/recreate')
+        return self.api_client.send_request(request, '/v2/transactions/recreate')
 
     # Retrieve a Transaction
     # To query a transaction, either customerRefId or txKey are required. If both values are provided, the retrieval will be based on the txKey.
     def one_transactions(self, request: OneTransactionsRequest):
-        return api_client.send_request(request, '/v1/transactions/one')
+        return self.api_client.send_request(request, '/v1/transactions/one')
 
     # Estimate Transaction Fee
     # This interface provides users with an estimated range of transaction fee rates of a given cryptocurrency when creating or speeding up transactions.
     def transaction_fee_rate(self, request: TransactionsFeeRateRequest):
-        return api_client.send_request(request, '/v2/transactions/getFeeRate')
+        return self.api_client.send_request(request, '/v2/transactions/getFeeRate')
 
     # Cancel Transaction
     # Cancel the authorization-pending transaction and the signing-in-progress transaction.
     def cancel_transactions(self, request: CancelTransactionRequest):
-        return api_client.send_request(request, '/v1/transactions/cancel')
+        return self.api_client.send_request(request, '/v1/transactions/cancel')
 
     # UTXO-Based Coin Sweeping
     # For multi-address UTXO coins under a wallet account, this interface allows users to collect the balances of certain qualifying addresses into a specified destination address.
     def collectionTransactionsUTXO(self, request: CollectionTransactionsUTXORequest):
-        return api_client.send_request(request, '/v1/transactions/utxo/collection')
+        return self.api_client.send_request(request, '/v1/transactions/utxo/collection')
