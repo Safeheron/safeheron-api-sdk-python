@@ -21,6 +21,13 @@ class ListAccountRequest:
         self.nameSuffix = None
 
 
+class OneAccountRequest:
+    def __init__(self):
+        # Wallet account key
+        self.accountKey = None
+
+
+
 class CreateAccountRequest:
     def __init__(self):
         # Account name, within 30 characters
@@ -153,6 +160,10 @@ class AccountApi:
     # Filter wallet account lists in team according to different combinations of conditions.
     def list_accounts(self, request: ListAccountRequest):
         return api_client.send_request(request, '/v1/account/list')
+
+    # One Wallet Accounts
+    def one_accounts(self, request: OneAccountRequest):
+        return api_client.send_request(request, '/v1/account/one')
 
     # Create a new wallet account.
     def create_account(self, request: CreateAccountRequest):

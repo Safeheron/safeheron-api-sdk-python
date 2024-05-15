@@ -1,5 +1,6 @@
 from safeheron_api_sdk_python.tools import *
 
+
 class Client:
 
     def __init__(self, config):
@@ -7,9 +8,15 @@ class Client:
         global platform_pub_key
         global use_private_key
         global base_url
+        global requestTimeout
         api_key = config['apiKey']
         platform_pub_key = config['safeheronPublicKey']
         base_url = config['baseUrl']
+        if 'requestTimeout' in config and config['requestTimeout'] is not None and config['requestTimeout'] != '':
+            requestTimeout = config['requestTimeout'] / 1000
+        else:
+            requestTimeout = 10
+
         if 'privateKey' in config:
             use_private_key = PEM_PRIVATE_HEAD + config['privateKey'] + PEM_PRIVATE_END
         if 'privateKeyPemFile' in config:
@@ -25,4 +32,5 @@ class Client:
         return decrypt_response(res, platform_pub_key, use_private_key)
 
     def execution(self, request, uri):
-        return requests.post(base_url + uri, data=json.dumps(request), headers={"Content-Type": "application/json"})
+        return requests.post(base_url + uri, data=json.dumps(request), headers={"Content-Type": "application/json"},
+                             timeout=requestTimeout)
