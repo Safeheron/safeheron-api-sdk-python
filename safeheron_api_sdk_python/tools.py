@@ -1,4 +1,3 @@
-# Crypto 可直接替换为 Cryptodome
 from Cryptodome.Cipher import AES
 from Cryptodome.Util.Padding import pad, unpad
 from Cryptodome.PublicKey import RSA
@@ -166,7 +165,7 @@ def sort_request(r: dict):
     data1 = json.loads(sortData)
     for key, value in data1.items():
         # print(value, type(value))
-        if isinstance(value, dict):  # 注意：对于dict类型的数据，一定要保留双引号，但python默认都是单引号
+        if isinstance(value, dict):
             val = json.dumps(value).replace(' ', '')
         else:
             val = value
