@@ -65,10 +65,10 @@ def aes_gcm_encrypt(key: bytes, iv: bytes, message: bytes):
     check_key_and_iv(key, iv)
     try:
         cipher = AES.new(key, AES.MODE_GCM, iv)
-        encrypt_text = cipher.encrypt(message)
+        cipher_text, tag = cipher.encrypt_and_digest(message)
     except Exception as e:
         raise Exception("aes encrypt error: %s" % e)
-    return encrypt_text
+    return cipher_text + tag
 
 
 def aes_decrypt(key: bytes, iv: bytes, encrypt_text: bytes):
