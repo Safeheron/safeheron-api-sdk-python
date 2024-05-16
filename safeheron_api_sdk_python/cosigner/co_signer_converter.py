@@ -16,12 +16,11 @@ class CoSignerConverter:
 
     def __init__(self, config):
         self.api_pub_key = config['apiPubKey']
-        if 'bizPrivKey' in config:
+        if config.get('bizPrivKey'):
             self.biz_privKey = PEM_PRIVATE_HEAD + config['bizPrivKey'] + PEM_PRIVATE_END
-        if 'bizPrivKeyPemFile' in config:
-            private_key_pem_file = config['bizPrivKeyPemFile']
-            if private_key_pem_file is not None and private_key_pem_file != '':
-                self.biz_privKey = load_rsa_private_key(private_key_pem_file)
+        if config.get('bizPrivKeyPemFile'):
+            self.biz_privKey = load_rsa_private_key(config['bizPrivKeyPemFile'])
+
 
     def request_convert(self, co_signer_call_back):
         platform_rsa_pk = get_rsa_key(PEM_PUBLIC_HEAD + self.api_pub_key + PEM_PUBLIC_END)
