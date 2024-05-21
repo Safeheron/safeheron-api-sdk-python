@@ -55,7 +55,7 @@ class CoSignerConverter:
         # 2 get aes key and iv
         key = co_signer_call_back.pop('key')
         if ECB_OAEP_TYPE == rsaType:
-            aes_data = rsa_oape_decrypt(api_user_rsa_sk, key)
+            aes_data = rsa_oaep_decrypt(api_user_rsa_sk, key)
         else:
             aes_data = rsa_decrypt(api_user_rsa_sk, key)
         aes_key = aes_data[0:32]

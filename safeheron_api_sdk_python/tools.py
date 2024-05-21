@@ -109,7 +109,7 @@ def rsa_encrypt(public_key, message: bytes):
     return encrypt_text_base64.decode('utf-8')
 
 
-def rsa_oape_encrypt(public_key, message: bytes):
+def rsa_oaep_encrypt(public_key, message: bytes):
     try:
         cipher = PKCS1_OAEP.new(public_key, hashAlgo=SHA256)
         encrypt_text = cipher.encrypt(message)
@@ -129,7 +129,7 @@ def rsa_decrypt(private_key, message: str):
         raise Exception("rsa decrypt error: %s" % e)
 
 
-def rsa_oape_decrypt(private_key, message: str):
+def rsa_oaep_decrypt(private_key, message: str):
     encrypt_text = b64decode(message)
     try:
         cipher_rsa = PKCS1_OAEP.new(private_key, hashAlgo=SHA256)
@@ -188,7 +188,7 @@ def encrypt_request(api_key, request_dict, platform_rsa_pk, api_user_rsa_sk):
 
     # 1 rsa encrypt aes key + iv
     aes_data = aes_key + aes_iv
-    ret['key'] = rsa_oape_encrypt(platform_rsa_pk, aes_data)
+    ret['key'] = rsa_oaep_encrypt(platform_rsa_pk, aes_data)
 
     # 2 aes encrypt request data
     if request_dict is not None:
@@ -241,7 +241,7 @@ def decrypt_response(response_dict, platform_rsa_pk, api_user_rsa_sk):
     # 2 get aes key and iv
     key = response_dict.pop('key')
     if ECB_OAEP_TYPE == rsaType:
-        aes_data = rsa_oape_decrypt(api_user_rsa_sk, key)
+        aes_data = rsa_oaep_decrypt(api_user_rsa_sk, key)
     else:
         aes_data = rsa_decrypt(api_user_rsa_sk, key)
     aes_key = aes_data[0:32]
