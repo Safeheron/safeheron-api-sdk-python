@@ -1,4 +1,3 @@
-# Crypto 可直接替换为 Cryptodome
 from Cryptodome.Cipher import AES
 from Cryptodome.Util.Padding import pad, unpad
 from Cryptodome.PublicKey import RSA
@@ -8,6 +7,7 @@ from Cryptodome.Signature import PKCS1_v1_5 as Signature_pkcs1_v1_5
 from Cryptodome.Cipher import PKCS1_v1_5 as Cipher_pkcs1_v1_5
 from Cryptodome.Hash import SHA256, SHA1
 from Cryptodome import Random
+from Crypto.Cipher import PKCS1_OAEP
 import json
 import time
 import requests
@@ -19,6 +19,10 @@ PEM_PUBLIC_HEAD = "-----BEGIN PUBLIC KEY-----\n"
 PEM_PUBLIC_END = "\n-----END PUBLIC KEY-----"
 PEM_PRIVATE_HEAD = "-----BEGIN RSA PRIVATE KEY-----\n"
 PEM_PRIVATE_END = "\n-----END RSA PRIVATE KEY-----"
+
+
+GCM_TYPE = "GCM_NOPADDING"
+ECB_OAEP_TYPE = "ECB_OAEP"
 
 def load_rsa_private_key(file_path, password=None):
     try:
@@ -55,6 +59,16 @@ def aes_encrypt(key: bytes, iv: bytes, message: bytes):
     return encrypt_text
 
 
+def aes_gcm_encrypt(key: bytes, iv: bytes, message: bytes):
+    check_key_and_iv(key, iv)
+    try:
+        cipher = AES.new(key, AES.MODE_GCM, iv)
+        cipher_text, tag = cipher.encrypt_and_digest(message)
+    except Exception as e:
+        raise Exception("aes encrypt error: %s" % e)
+    return cipher_text + tag
+
+
 def aes_decrypt(key: bytes, iv: bytes, encrypt_text: bytes):
     check_key_and_iv(key, iv)
     try:
@@ -63,6 +77,16 @@ def aes_decrypt(key: bytes, iv: bytes, encrypt_text: bytes):
     except Exception as e:
         raise Exception("aes decrypt error: %s" % e)
     return unpad(pad_text, AES.block_size)
+
+
+def aes_gcm_decrypt(key: bytes, iv: bytes, encrypt_text: bytes):
+    check_key_and_iv(key, iv)
+    try:
+        cipher = AES.new(key, AES.MODE_GCM, iv)
+        pad_text = cipher.decrypt(encrypt_text)
+    except Exception as e:
+        raise Exception("aes decrypt error: %s" % e)
+    return pad_text[0:len(pad_text)-len(iv)]
 
 
 def get_rsa_key(key_pem, passphrase=None):
@@ -84,12 +108,31 @@ def rsa_encrypt(public_key, message: bytes):
     return encrypt_text_base64.decode('utf-8')
 
 
+def rsa_oaep_encrypt(public_key, message: bytes):
+    try:
+        cipher = PKCS1_OAEP.new(public_key, hashAlgo=SHA256)
+        encrypt_text = cipher.encrypt(message)
+    except Exception as e:
+        raise Exception("rsa encrypt error: %s" % e)
+    encrypt_text_base64 = b64encode(encrypt_text)
+    return encrypt_text_base64.decode('utf-8')
+
+
 def rsa_decrypt(private_key, message: str):
     encrypt_text = b64decode(message)
     try:
         cipher_rsa = Cipher_pkcs1_v1_5.new(private_key)
         sentinel = Random.new().read(SHA1.digest_size)
         return cipher_rsa.decrypt(encrypt_text, sentinel)
+    except Exception as e:
+        raise Exception("rsa decrypt error: %s" % e)
+
+
+def rsa_oaep_decrypt(private_key, message: str):
+    encrypt_text = b64decode(message)
+    try:
+        cipher_rsa = PKCS1_OAEP.new(private_key, hashAlgo=SHA256)
+        return cipher_rsa.decrypt(encrypt_text)
     except Exception as e:
         raise Exception("rsa decrypt error: %s" % e)
 
@@ -121,7 +164,7 @@ def sort_request(r: dict):
     data1 = json.loads(sortData)
     for key, value in data1.items():
         # print(value, type(value))
-        if isinstance(value, dict):  # 注意：对于dict类型的数据，一定要保留双引号，但python默认都是单引号
+        if isinstance(value, dict):
             val = json.dumps(value).replace(' ', '')
         else:
             val = value
@@ -144,12 +187,12 @@ def encrypt_request(api_key, request_dict, platform_rsa_pk, api_user_rsa_sk):
 
     # 1 rsa encrypt aes key + iv
     aes_data = aes_key + aes_iv
-    ret['key'] = rsa_encrypt(platform_rsa_pk, aes_data)
+    ret['key'] = rsa_oaep_encrypt(platform_rsa_pk, aes_data)
 
     # 2 aes encrypt request data
     if request_dict is not None:
         request_data = json.dumps(request_dict.__dict__).replace('\'', '\"').replace('\n', '').encode('utf-8')
-        aes_encrypted_bytes = aes_encrypt(aes_key, aes_iv, request_data)
+        aes_encrypted_bytes = aes_gcm_encrypt(aes_key, aes_iv, request_data)
         ret['bizContent'] = b64encode(aes_encrypted_bytes).decode()
 
     # 3 set timestamp
@@ -158,7 +201,8 @@ def encrypt_request(api_key, request_dict, platform_rsa_pk, api_user_rsa_sk):
     # 4 sign request
     need_sign_message = sort_request(ret)
     ret['sig'] = rsa_sign(api_user_rsa_sk, need_sign_message)
-
+    ret['rsaType'] = ECB_OAEP_TYPE
+    ret['aesType'] = GCM_TYPE
     return ret
 
 
@@ -178,6 +222,13 @@ def decrypt_response(response_dict, platform_rsa_pk, api_user_rsa_sk):
         raise Exception(response_dict)
 
     # 1 rsa verify
+    if "rsaType" in response_dict:
+        rsaType = response_dict.pop('rsaType')
+
+
+    if "aesType" in response_dict:
+        aesType = response_dict.pop('aesType')
+
     sig = response_dict.pop('sig')
     need_sign_message = sort_request(response_dict)
     v = rsa_verify(platform_rsa_pk, need_sign_message, sig)
@@ -186,12 +237,18 @@ def decrypt_response(response_dict, platform_rsa_pk, api_user_rsa_sk):
 
     # 2 get aes key and iv
     key = response_dict.pop('key')
-    aes_data = rsa_decrypt(api_user_rsa_sk, key)
+    if ECB_OAEP_TYPE == rsaType:
+        aes_data = rsa_oaep_decrypt(api_user_rsa_sk, key)
+    else:
+        aes_data = rsa_decrypt(api_user_rsa_sk, key)
     aes_key = aes_data[0:32]
     aes_iv = aes_data[32:48]
 
     # 3 aes decrypt data, get response data
-    r = aes_decrypt(aes_key, aes_iv, b64decode(response_dict['bizContent']))
+    if GCM_TYPE == aesType:
+        r = aes_gcm_decrypt(aes_key, aes_iv, b64decode(response_dict['bizContent']))
+    else:
+        r = aes_decrypt(aes_key, aes_iv, b64decode(response_dict['bizContent']))
     #response_dict['bizContent'] = json.loads(r.decode())
 
     return json.loads(r.decode())

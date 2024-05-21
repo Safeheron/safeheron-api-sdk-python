@@ -136,6 +136,8 @@ class CreateTransactionRequest:
         self.failOnContract = None
         # Custom nonce
         self.nonce = None
+        # Customizable sequence number on Aptos, similar to the nonce in the EVM.
+        self.sequenceNumber = None
         # Balance verification, BALANCE_CHECK by default
         self.balanceVerifyType = None
 
@@ -161,6 +163,56 @@ class FeeRateDto:
         self.gasFeeCap = None
         # SUI gas budget, similar to EIP-1559 max fee
         self.gasBudget = None
+        # The gas price the transaction sender is willing to pay, similar to EVM gasPrice
+        self.gasUnitPrice = None
+        # The maximum number of gas units that the transaction sender is willing to spend to execute the transaction, similar to EVM gasLimit
+        self.maxGasAmount = None
+
+class CreateTransactionsUTXOMultiDestRequest:
+    def __init__(self):
+        # Merchant unique business ID (100 characters max)
+        self.customerRefId = None
+        # Merchant extended field (defined by merchant) shown to merchant (255 characters max)
+        self.customerExt1 = None
+        # Merchant extended field (defined by merchant) shown to merchant (255 characters max)
+        self.customerExt2 = None
+        # Transaction note (180 characters max)
+        self.note = None
+        # Coin key
+        self.coinKey = None
+        # Transaction Fee Rate Grade
+        # Choose between transaction fees. If the transaction fee rate is preset, it will take priority
+        self.txFeeLevel = None
+        # Transaction fee rate, either txFeeLevel or feeRateDto
+        self.feeRateDto = FeeRateDto()
+        # Maximum estimated transaction fee rate for a given transaction
+        self.maxTxFeeRate = None
+        # Source account key
+        self.sourceAccountKey = None
+        # Account type
+        self.sourceAccountType = None
+        # Destination address list
+        self.destinationAddressList = [DestinationAddress]
+        # Destination Tag
+        self.destinationTag = None
+        # Bitcoin enabled for RBF (Replace-by-fee is a protocol in the Bitcoin mempool that allows for the replacement of an unconfirmed transaction with another one)
+        self.isRbf = None
+
+    def asDict(self):
+        dict = self.__dict__
+        dict["feeRateDto"] = dict["feeRateDto"].__dict__
+        destinationAddressList = []
+        for time in dict["destinationAddressList"]:
+            destinationAddressList.append(time.__dict__)
+        dict["destinationAddressList"] = destinationAddressList
+        return dict
+
+class DestinationAddress:
+    def __init__(self):
+        # Destination address
+        self.address = None
+        # Transaction amount
+        self.amount = None
 
 
 class RecreateTransactionRequest:
@@ -203,8 +255,18 @@ class TransactionsFeeRateRequest:
         self.sourceAddress = None
         # Destination address is optional for TRON and FIL when estimating transaction fees (although providing it may result in a more accurate fee estimation). For EVM-based transactions, the destination address is required when retrieving the gas limit on the blockchain. Otherwise, a default fixed gas limit value will be returned
         self.destinationAddress = None
+        # Destination address list
+        self.destinationAddressList = [DestinationAddress]
         # Transfer amount is required to calculate gas limit more accurately when using EVM chains. When using UTXO, providing the amount can estimate transaction fees more accurately. If no amount is provided, the calculation is based on the maximum UTXO quantity. When using SUI, providing the amount can estimate gas budget more accurately
         self.value = None
+
+    def asDict(self):
+        dict = self.__dict__
+        destinationAddressList = []
+        for time in dict["destinationAddressList"]:
+            destinationAddressList.append(time.__dict__)
+        dict["destinationAddressList"] = destinationAddressList
+        return dict
 
 
 class CancelTransactionRequest:
@@ -253,46 +315,50 @@ class CollectionTransactionsUTXORequest:
 class TransactionApi:
 
     def __init__(self, config):
-        global api_client
-        api_client = Client(config)
+        self.api_client = Client(config)
 
     # Transaction List V1
     # Filter transaction history by various conditions. For optimal results, we recommend using the V2 version.
     def list_transactions_v1(self, request: ListTransactionsV1Request):
-        return api_client.send_request(request, '/v1/transactions/list')
+        return self.api_client.send_request(request, '/v1/transactions/list')
 
     # Transaction List V2
     # Filter transaction history by various conditions.
     def list_transactions_v2(self, request: ListTransactionsV2Request):
-        return api_client.send_request(request, '/v2/transactions/list')
+        return self.api_client.send_request(request, '/v2/transactions/list')
 
     # Create a new transaction.
     def create_transactions(self, request: CreateTransactionRequest):
         request.asDict()
-        return api_client.send_request(request, '/v2/transactions/create')
+        return self.api_client.send_request(request, '/v2/transactions/create')
+
+    # For UTXOs that natively support multiple OUTPUTs, this interface allows a single transaction to transfer funds to multiple destination addresses simultaneously.(To use the Co-Signer, please use version 1.5.9 or higher)
+    def create_transactions_UTXO_multiDest(self, request: CreateTransactionsUTXOMultiDestRequest):
+        request.asDict()
+        return self.api_client.send_request(request, '/v1/transactions/utxo/multidest/create')
 
     # Speed up EVM and UTXO-based Transactions
     # Transactions with low transaction fees and those that have been pending for a long time can be sped up. EVM-based and BTC transactions can be sped up through RBF(If 'isRbf' is set to true during transaction creation, the transaction will be accelerated using RBF acceleration. Otherwise, CPFP acceleration will be used.) For other UTXO-based transactions, CPFP will be used.
     def recreate_transactions(self, request: RecreateTransactionRequest):
         request.asDict()
-        return api_client.send_request(request, '/v2/transactions/recreate')
+        return self.api_client.send_request(request, '/v2/transactions/recreate')
 
     # Retrieve a Transaction
     # To query a transaction, either customerRefId or txKey are required. If both values are provided, the retrieval will be based on the txKey.
     def one_transactions(self, request: OneTransactionsRequest):
-        return api_client.send_request(request, '/v1/transactions/one')
+        return self.api_client.send_request(request, '/v1/transactions/one')
 
     # Estimate Transaction Fee
     # This interface provides users with an estimated range of transaction fee rates of a given cryptocurrency when creating or speeding up transactions.
     def transaction_fee_rate(self, request: TransactionsFeeRateRequest):
-        return api_client.send_request(request, '/v2/transactions/getFeeRate')
+        return self.api_client.send_request(request, '/v2/transactions/getFeeRate')
 
     # Cancel Transaction
     # Cancel the authorization-pending transaction and the signing-in-progress transaction.
     def cancel_transactions(self, request: CancelTransactionRequest):
-        return api_client.send_request(request, '/v1/transactions/cancel')
+        return self.api_client.send_request(request, '/v1/transactions/cancel')
 
     # UTXO-Based Coin Sweeping
     # For multi-address UTXO coins under a wallet account, this interface allows users to collect the balances of certain qualifying addresses into a specified destination address.
     def collectionTransactionsUTXO(self, request: CollectionTransactionsUTXORequest):
-        return api_client.send_request(request, '/v1/transactions/utxo/collection')
+        return self.api_client.send_request(request, '/v1/transactions/utxo/collection')

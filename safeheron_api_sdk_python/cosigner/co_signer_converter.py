@@ -15,19 +15,16 @@ class CoSignerResponse:
 class CoSignerConverter:
 
     def __init__(self, config):
-        global api_pub_key
-        global biz_privKey
-        api_pub_key = config['apiPubKey']
-        if 'bizPrivKey' in config:
-            biz_privKey = PEM_PRIVATE_HEAD + config['bizPrivKey'] + PEM_PRIVATE_END
-        if 'bizPrivKeyPemFile' in config:
-            private_key_pem_file = config['bizPrivKeyPemFile']
-            if private_key_pem_file is not None and private_key_pem_file != '':
-                biz_privKey = load_rsa_private_key(private_key_pem_file)
+        self.api_pub_key = config['apiPubKey']
+        if config.get('bizPrivKey'):
+            self.biz_privKey = PEM_PRIVATE_HEAD + config['bizPrivKey'] + PEM_PRIVATE_END
+        if config.get('bizPrivKeyPemFile'):
+            self.biz_privKey = load_rsa_private_key(config['bizPrivKeyPemFile'])
+
 
     def request_convert(self, co_signer_call_back):
-        platform_rsa_pk = get_rsa_key(PEM_PUBLIC_HEAD + api_pub_key + PEM_PUBLIC_END)
-        api_user_rsa_sk = get_rsa_key(biz_privKey)
+        platform_rsa_pk = get_rsa_key(PEM_PUBLIC_HEAD + self.api_pub_key + PEM_PUBLIC_END)
+        api_user_rsa_sk = get_rsa_key(self.biz_privKey)
         required_keys = {
             'key',
             'sig',
@@ -40,6 +37,13 @@ class CoSignerConverter:
             raise Exception(co_signer_call_back)
 
         # 1 rsa verify
+        if "rsaType" in co_signer_call_back:
+            rsaType = co_signer_call_back.pop('rsaType')
+
+
+        if "aesType" in co_signer_call_back:
+            aesType = co_signer_call_back.pop('aesType')
+
         sig = co_signer_call_back.pop('sig')
         need_sign_message = sort_request(co_signer_call_back)
         v = rsa_verify(platform_rsa_pk, need_sign_message, sig)
@@ -48,19 +52,25 @@ class CoSignerConverter:
 
         # 2 get aes key and iv
         key = co_signer_call_back.pop('key')
-        aes_data = rsa_decrypt(api_user_rsa_sk, key)
+        if ECB_OAEP_TYPE == rsaType:
+            aes_data = rsa_oaep_decrypt(api_user_rsa_sk, key)
+        else:
+            aes_data = rsa_decrypt(api_user_rsa_sk, key)
         aes_key = aes_data[0:32]
         aes_iv = aes_data[32:48]
 
         # 3 aes decrypt data, get response data
-        r = aes_decrypt(aes_key, aes_iv, b64decode(co_signer_call_back['bizContent']))
+        if GCM_TYPE == aesType:
+            r = aes_gcm_decrypt(aes_key, aes_iv, b64decode(co_signer_call_back['bizContent']))
+        else:
+            r = aes_decrypt(aes_key, aes_iv, b64decode(co_signer_call_back['bizContent']))
         # response_dict['bizContent'] = json.loads(r.decode())
 
         return json.loads(r.decode())
 
     def response_converter(self, co_signer_response: CoSignerResponse):
-        platform_rsa_pk = get_rsa_key(PEM_PUBLIC_HEAD + api_pub_key + PEM_PUBLIC_END)
-        api_user_rsa_sk = get_rsa_key(PEM_PRIVATE_HEAD + biz_privKey + PEM_PRIVATE_END)
+        platform_rsa_pk = get_rsa_key(PEM_PUBLIC_HEAD + self.api_pub_key + PEM_PUBLIC_END)
+        api_user_rsa_sk = get_rsa_key(PEM_PRIVATE_HEAD + self.biz_privKey + PEM_PRIVATE_END)
 
         ret = dict()
 

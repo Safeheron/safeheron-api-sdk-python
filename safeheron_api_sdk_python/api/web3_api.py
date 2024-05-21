@@ -200,58 +200,57 @@ class ListWeb3SignRequest:
 class Web3Api:
 
     def __init__(self, config):
-        global api_client
-        api_client = Client(config)
+        self.api_client = Client(config)
 
     # Create a Web3 Wallet Account
     def createWeb3Account(self, request: CreateWeb3AccountRequest):
-        return api_client.send_request(request, '/v1/web3/account/create')
+        return self.api_client.send_request(request, '/v1/web3/account/create')
 
     # Batch Create Web3 Wallet Accounts
     # Create a batch of wallet accounts based on specified number. Web3 wallet accounts created in batches are not displayed in the Safeheron App by default.
     def batchCreateWeb3Account(self, request: BatchCreateWeb3AccountRequest):
-        return api_client.send_request(request, '/v1/web3/batch/account/create')
+        return self.api_client.send_request(request, '/v1/web3/batch/account/create')
 
     # List Web3 Wallet Accounts
     # Filter Web3 wallet account lists by various conditions.
     def listWeb3Accounts(self, request: ListWeb3AccountRequest):
-        return api_client.send_request(request, '/v1/web3/account/list')
+        return self.api_client.send_request(request, '/v1/web3/account/list')
 
     # Create ethSign
     # Merchants can initiate an ethSign signature through this interface. The merchant is required to serialize the transaction data, generating a corresponding hash (supporting both 0x and non-0x formatted data). The hash is then submitted through this interface to create a signature, which can be obtained by Retrieve a Single Web3 Signature interface or webhook. From there, merchants can complete the subsequent steps according to their own needs once they have obtained the signature.
     def createWeb3EthSign(self, request: CreateWeb3EthSignRequest):
         request.asDict();
-        return api_client.send_request(request, '/v1/web3/sign/ethSign')
+        return self.api_client.send_request(request, '/v1/web3/sign/ethSign')
 
     # Create personalSign
     # Merchants can initiate a personalSign signature for any text using this interface. The merchant only needs to prepare the data to be signed and submit it through this interface to create the signature. The resulting signature can then be obtained by Retrieve a Single Web3 Signature interface or via webhook. From there, merchants can complete the subsequent steps according to their own needs once they have obtained the signature.
     def createWeb3PersonalSign(self, request: CreateWeb3PersonalSignRequest):
         request.asDict()
-        return api_client.send_request(request, '/v1/web3/sign/personalSign')
+        return self.api_client.send_request(request, '/v1/web3/sign/personalSign')
 
     # Create ethSignTypedData
     # Merchants can initiate an ethSignTypedData signature of specific formatted data (supporting data formats of v1, v3, and v4) through this interface. Merchants will need to format their signature data and submit it through the interface. Once the signature is created, the result can be retrieved via Retrieve a Single Web3 Signature interface or webhook. From there, merchants can complete the subsequent steps according to their own needs once they have obtained the signature.
     def createWeb3EthSignTypedData(self, request: CreateWeb3EthSignTypedDataRequest):
         request.asDict()
-        return api_client.send_request(request, '/v1/web3/sign/ethSignTypedData')
+        return self.api_client.send_request(request, '/v1/web3/sign/ethSignTypedData')
 
     # Create ethSignTransaction
     # Merchants can initiate ethSignTransaction signature transactions through this interface. The merchant must prepare transaction-related data, such as from, to, nonce, gas limit, gas price, value, data, and more. Once this data is submitted, a signature is created and the result can be obtained by Retrieve a Single Web3 Signature interface or webhook. From there, merchants can complete the subsequent steps according to their own needs once they have obtained the signature.
     def createWeb3EthSignTransaction(self, request: CreateWeb3EthSignTransactionRequest):
         request.asDict()
-        return api_client.send_request(request, '/v1/web3/sign/ethSignTransaction')
+        return self.api_client.send_request(request, '/v1/web3/sign/ethSignTransaction')
 
     # Cancel Signature
     # Cancel pending signatures.
     def cancelWeb3Sign(self, request: CancelWeb3SignRequest):
-        return api_client.send_request(request, '/v1/web3/sign/cancel')
+        return self.api_client.send_request(request, '/v1/web3/sign/cancel')
 
     # Retrieve a Single Web3 Signature
     # To query a transaction, either customerRefId or txKey are required. If both values are provided, the retrieval will be based on the txKey.
     def oneWeb3Sign(self, request: OneWeb3SignRequest):
-        return api_client.send_request(request, '/v1/web3/sign/one')
+        return self.api_client.send_request(request, '/v1/web3/sign/one')
 
     # Web3 Sign Transaction List
     # Filter Web3 Sign history by various conditions.
     def listWeb3Sign(self, request: ListWeb3SignRequest):
-        return api_client.send_request(request, '/v1/web3/sign/list')
+        return self.api_client.send_request(request, '/v1/web3/sign/list')

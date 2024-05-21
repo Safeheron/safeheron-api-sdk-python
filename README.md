@@ -12,6 +12,35 @@
 $ pip install safeheron-api-sdk-python
 ```
 
+# Usage
+```python
+from safeheron_api_sdk_python.api.account_api import *
+```
+
+> Take [`/v1/account/create`](https://docs.safeheron.com/api/index.html) as an example to explain, the complete code can be found in `demo/api_demo` directory
+
+* Construct `config`
+    ```python
+    # You can get `ApiKey` and `SafeheronRsaPublicKey` from Safeheron Web Console: https://www.safeheron.com/console.
+    config={
+            'apiKey': '5921aa306f*******368db9abf', 
+            'privateKeyPemFile': './my_private.pem',
+            'safeheronPublicKey': 'MIICIjANBgkqhkiG9w0***********+zSdC+8eBdZyI7nMdPIj6xOhUCAwEAAQ==',
+            'baseUrl': 'https://api.safeheron.vip',
+            'RequestTimeout': 10000
+  }
+    ```
+* Call `create_account` api with `config`
+    ```python
+    account_api = AccountApi(config)
+    param = CreateAccountRequest()
+    param.accountName = "accountNameTest"
+    res = account_api.create_account(param)
+    # Your code to process response
+    ...
+    ...
+    ```
+
 # Test
 
 ## Test Create Wallet Account
@@ -27,6 +56,8 @@ $ pip install safeheron-api-sdk-python
     safeheronPublicKey: MIICI****QuTOTECAwEAAQ==
     # Safeheron API url
     baseUrl: https://api.safeheron.vip
+    # RequestTimeout (Millisecond), Default: 10000
+    requestTimeout: 10000
     ```
 * Copy config to `config.yaml` file.
     ```bash
@@ -50,6 +81,8 @@ $ pip install safeheron-api-sdk-python
     safeheronPublicKey: MIICI****QuTOTECAwEAAQ==
     # Safeheron API url
     baseUrl: https://api.safeheron.vip
+    # RequestTimeout (Millisecond), Default: 10000
+    requestTimeout: 10000
     # Wallet Account key
     accountKey: account****5ecad40
     # To address
@@ -78,6 +111,8 @@ $ pip install safeheron-api-sdk-python
     safeheronPublicKey: MIICI****QuTOTECAwEAAQ==
     # Safeheron API url
     baseUrl: https://api.safeheron.vip
+    # RequestTimeout (Millisecond), Default: 10000
+    requestTimeout: 10000
     # Wallet Account key
     accountKey: account****5ecad40
     # Goerli testnet token address in wallet account
