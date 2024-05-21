@@ -20,9 +20,8 @@ PEM_PUBLIC_END = "\n-----END PUBLIC KEY-----"
 PEM_PRIVATE_HEAD = "-----BEGIN RSA PRIVATE KEY-----\n"
 PEM_PRIVATE_END = "\n-----END RSA PRIVATE KEY-----"
 
-CBC_TYPE = "CBC_PKCS7PADDING"
+
 GCM_TYPE = "GCM_NOPADDING"
-RSA_TYPE = "RSA"
 ECB_OAEP_TYPE = "ECB_OAEP"
 
 def load_rsa_private_key(file_path, password=None):
@@ -225,13 +224,11 @@ def decrypt_response(response_dict, platform_rsa_pk, api_user_rsa_sk):
     # 1 rsa verify
     if "rsaType" in response_dict:
         rsaType = response_dict.pop('rsaType')
-    else:
-        rsaType = RSA_TYPE
+
 
     if "aesType" in response_dict:
         aesType = response_dict.pop('aesType')
-    else:
-        aesType = CBC_TYPE
+
     sig = response_dict.pop('sig')
     need_sign_message = sort_request(response_dict)
     v = rsa_verify(platform_rsa_pk, need_sign_message, sig)

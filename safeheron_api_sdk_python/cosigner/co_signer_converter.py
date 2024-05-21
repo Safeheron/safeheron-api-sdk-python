@@ -39,13 +39,11 @@ class CoSignerConverter:
         # 1 rsa verify
         if "rsaType" in co_signer_call_back:
             rsaType = co_signer_call_back.pop('rsaType')
-        else:
-            rsaType = RSA_TYPE
+
 
         if "aesType" in co_signer_call_back:
             aesType = co_signer_call_back.pop('aesType')
-        else:
-            aesType = CBC_TYPE
+
         sig = co_signer_call_back.pop('sig')
         need_sign_message = sort_request(co_signer_call_back)
         v = rsa_verify(platform_rsa_pk, need_sign_message, sig)

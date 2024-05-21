@@ -30,13 +30,10 @@ class WebhookConverter:
         # 1 rsa verify
         if "rsaType" in webhook:
             rsaType = webhook.pop('rsaType')
-        else:
-            rsaType = RSA_TYPE
 
         if "aesType" in webhook:
             aesType = webhook.pop('aesType')
-        else:
-            aesType = CBC_TYPE
+
         sig = webhook.pop('sig')
         need_sign_message = sort_request(webhook)
         v = rsa_verify(platform_rsa_pk, need_sign_message, sig)

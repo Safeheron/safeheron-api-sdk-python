@@ -168,7 +168,7 @@ class FeeRateDto:
         # The maximum number of gas units that the transaction sender is willing to spend to execute the transaction, similar to EVM gasLimit
         self.maxGasAmount = None
 
-class CreateTransactionsUTXOMultidestRequest:
+class CreateTransactionsUTXOMultiDestRequest:
     def __init__(self):
         # Merchant unique business ID (100 characters max)
         self.customerRefId = None
@@ -333,7 +333,7 @@ class TransactionApi:
         return self.api_client.send_request(request, '/v2/transactions/create')
 
     # For UTXOs that natively support multiple OUTPUTs, this interface allows a single transaction to transfer funds to multiple destination addresses simultaneously.(To use the Co-Signer, please use version 1.5.9 or higher)
-    def create_transactions_UTXO_multidest(self, request: CreateTransactionsUTXOMultidestRequest):
+    def create_transactions_UTXO_multiDest(self, request: CreateTransactionsUTXOMultiDestRequest):
         request.asDict()
         return self.api_client.send_request(request, '/v1/transactions/utxo/multidest/create')
 
