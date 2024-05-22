@@ -24,5 +24,5 @@ class TestCoSigner:
         coSignerResponse = CoSignerResponse()
         coSignerResponse.approve = True
         coSignerResponse.txKey = "TxKey that needs to be approved"
-        encryptResponse = converter.response_converter(coSignerResponse)
+        encryptResponse = converter.response_converter_with_new_crypto_type(coSignerResponse)
         # The customer returns encryptResponse after processing the business logic.

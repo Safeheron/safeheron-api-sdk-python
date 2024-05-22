@@ -27,7 +27,7 @@ from safeheron_api_sdk_python.api.account_api import *
             'privateKeyPemFile': './my_private.pem',
             'safeheronPublicKey': 'MIICIjANBgkqhkiG9w0***********+zSdC+8eBdZyI7nMdPIj6xOhUCAwEAAQ==',
             'baseUrl': 'https://api.safeheron.vip',
-            'RequestTimeout': 10000
+            'RequestTimeout': 20000
   }
     ```
 * Call `create_account` api with `config`
@@ -56,8 +56,8 @@ from safeheron_api_sdk_python.api.account_api import *
     safeheronPublicKey: MIICI****QuTOTECAwEAAQ==
     # Safeheron API url
     baseUrl: https://api.safeheron.vip
-    # RequestTimeout (Millisecond), Default: 10000
-    requestTimeout: 10000
+    # RequestTimeout (Millisecond), Default: 20000
+    requestTimeout: 20000
     ```
 * Copy config to `config.yaml` file.
     ```bash
@@ -81,8 +81,8 @@ from safeheron_api_sdk_python.api.account_api import *
     safeheronPublicKey: MIICI****QuTOTECAwEAAQ==
     # Safeheron API url
     baseUrl: https://api.safeheron.vip
-    # RequestTimeout (Millisecond), Default: 10000
-    requestTimeout: 10000
+    # RequestTimeout (Millisecond), Default: 20000
+    requestTimeout: 20000
     # Wallet Account key
     accountKey: account****5ecad40
     # To address
@@ -111,8 +111,8 @@ from safeheron_api_sdk_python.api.account_api import *
     safeheronPublicKey: MIICI****QuTOTECAwEAAQ==
     # Safeheron API url
     baseUrl: https://api.safeheron.vip
-    # RequestTimeout (Millisecond), Default: 10000
-    requestTimeout: 10000
+    # RequestTimeout (Millisecond), Default: 20000
+    requestTimeout: 20000
     # Wallet Account key
     accountKey: account****5ecad40
     # Goerli testnet token address in wallet account
