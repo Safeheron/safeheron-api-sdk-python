@@ -28,9 +28,11 @@ class WebhookConverter:
             raise Exception(webhook)
 
         # 1 rsa verify
+        rsaType = ''
         if "rsaType" in webhook:
             rsaType = webhook.pop('rsaType')
 
+        aesType = ''
         if "aesType" in webhook:
             aesType = webhook.pop('aesType')
 
