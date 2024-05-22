@@ -10,7 +10,7 @@ class Client:
         if config.get('requestTimeout'):
             self.requestTimeout = config['requestTimeout'] / 1000
         else:
-            self.requestTimeout = 10
+            self.requestTimeout = 20
         if config.get('privateKey'):
             self.use_private_key = PEM_PRIVATE_HEAD + config['privateKey'] + PEM_PRIVATE_END
         if config.get('privateKeyPemFile'):

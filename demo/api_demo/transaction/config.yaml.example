@@ -8,5 +8,5 @@ privateKeyPemFile: './my_private.pem'
 safeheronPublicKey: MIICI****QuTOTECAwEAAQ==
 # Safeheron API url
 baseUrl: https://api.safeheron.vip
-# RequestTimeout (Millisecond), Default: 10000
-requestTimeout: 10000
+# RequestTimeout (Millisecond), Default: 20000
+requestTimeout: 20000

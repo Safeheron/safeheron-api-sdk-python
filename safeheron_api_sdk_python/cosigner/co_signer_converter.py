@@ -69,6 +69,7 @@ class CoSignerConverter:
 
         return json.loads(r.decode())
 
+    # It has been Deprecated,Please use convertCoSignerResponseWithNewCryptoType
     def response_converter(self, co_signer_response: CoSignerResponse):
         platform_rsa_pk = get_rsa_key(PEM_PUBLIC_HEAD + self.api_pub_key + PEM_PUBLIC_END)
         api_user_rsa_sk = get_rsa_key(PEM_PRIVATE_HEAD + self.biz_privKey + PEM_PRIVATE_END)
@@ -98,4 +99,36 @@ class CoSignerConverter:
         need_sign_message = sort_request(ret)
         ret['sig'] = rsa_sign(api_user_rsa_sk, need_sign_message)
 
+        return ret
+
+    def response_converter_with_new_crypto_type(self, co_signer_response: CoSignerResponse):
+        platform_rsa_pk = get_rsa_key(PEM_PUBLIC_HEAD + self.api_pub_key + PEM_PUBLIC_END)
+        api_user_rsa_sk = get_rsa_key(PEM_PRIVATE_HEAD + self.biz_privKey + PEM_PRIVATE_END)
+
+        ret = dict()
+
+        # prepare aes key and iv
+        aes_key = get_random_bytes(32)
+        aes_iv = get_random_bytes(16)
+        response_data = json.dumps(co_signer_response.__dict__).replace('\'', '\"').replace('\n', '').encode('utf-8')
+
+        # 1 rsa encrypt aes key + iv
+        aes_data = aes_key + aes_iv
+        ret['key'] = rsa_oaep_encrypt(platform_rsa_pk, aes_data)
+
+        # 2 aes encrypt request data
+        if response_data is not None:
+            aes_encrypted_bytes = aes_gcm_encrypt(aes_key, aes_iv, response_data)
+            ret['bizContent'] = b64encode(aes_encrypted_bytes).decode()
+
+        # 3 set timestamp
+        ret['timestamp'] = str(int(time.time() * 1000))
+        ret['code'] = str('200')
+        ret['message'] = str('SUCCESS')
+
+        # 4 sign request
+        need_sign_message = sort_request(ret)
+        ret['sig'] = rsa_sign(api_user_rsa_sk, need_sign_message)
+        ret['rsaType'] = ECB_OAEP_TYPE
+        ret['aesType'] = GCM_TYPE
         return ret
