@@ -222,10 +222,11 @@ def decrypt_response(response_dict, platform_rsa_pk, api_user_rsa_sk):
         raise Exception(response_dict)
 
     # 1 rsa verify
+    rsaType = ''
     if "rsaType" in response_dict:
         rsaType = response_dict.pop('rsaType')
 
-
+    aesType = ''
     if "aesType" in response_dict:
         aesType = response_dict.pop('aesType')
 

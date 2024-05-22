@@ -37,10 +37,11 @@ class CoSignerConverter:
             raise Exception(co_signer_call_back)
 
         # 1 rsa verify
+        rsaType = ''
         if "rsaType" in co_signer_call_back:
             rsaType = co_signer_call_back.pop('rsaType')
 
-
+        aesType = ''
         if "aesType" in co_signer_call_back:
             aesType = co_signer_call_back.pop('aesType')
 
