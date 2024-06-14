@@ -71,7 +71,7 @@ class UpdateAccountShowStateRequest:
 class BatchUpdateAccountTagRequest:
     def __init__(self):
         # Wallet account key
-        self.accountKey = None
+        self.accountKeyList = None
         # Account tag
         self.accountTag = None
 
