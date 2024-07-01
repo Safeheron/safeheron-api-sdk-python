@@ -21,7 +21,6 @@ class CoSignerConverter:
         if config.get('bizPrivKeyPemFile'):
             self.biz_privKey = load_rsa_private_key(config['bizPrivKeyPemFile'])
 
-
     def request_convert(self, co_signer_call_back):
         platform_rsa_pk = get_rsa_key(PEM_PUBLIC_HEAD + self.api_pub_key + PEM_PUBLIC_END)
         api_user_rsa_sk = get_rsa_key(self.biz_privKey)
@@ -72,7 +71,7 @@ class CoSignerConverter:
     # It has been Deprecated,Please use convertCoSignerResponseWithNewCryptoType
     def response_converter(self, co_signer_response: CoSignerResponse):
         platform_rsa_pk = get_rsa_key(PEM_PUBLIC_HEAD + self.api_pub_key + PEM_PUBLIC_END)
-        api_user_rsa_sk = get_rsa_key(PEM_PRIVATE_HEAD + self.biz_privKey + PEM_PRIVATE_END)
+        api_user_rsa_sk = get_rsa_key(self.biz_privKey)
 
         ret = dict()
 
@@ -103,7 +102,7 @@ class CoSignerConverter:
 
     def response_converter_with_new_crypto_type(self, co_signer_response: CoSignerResponse):
         platform_rsa_pk = get_rsa_key(PEM_PUBLIC_HEAD + self.api_pub_key + PEM_PUBLIC_END)
-        api_user_rsa_sk = get_rsa_key(PEM_PRIVATE_HEAD + self.biz_privKey + PEM_PRIVATE_END)
+        api_user_rsa_sk = get_rsa_key(self.biz_privKey)
 
         ret = dict()
 
