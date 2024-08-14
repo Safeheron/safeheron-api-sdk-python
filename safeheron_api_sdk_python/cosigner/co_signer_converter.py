@@ -1,6 +1,3 @@
-import sys
-
-sys.path.pop(0)
 from safeheron_api_sdk_python.tools import *
 
 
