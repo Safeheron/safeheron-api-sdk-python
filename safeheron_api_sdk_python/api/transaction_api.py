@@ -1,6 +1,3 @@
-import sys
-
-sys.path.pop(0)
 from safeheron_api_sdk_python.client import *
 
 
@@ -202,8 +199,8 @@ class CreateTransactionsUTXOMultiDestRequest:
         dict = self.__dict__
         dict["feeRateDto"] = dict["feeRateDto"].__dict__
         destinationAddressList = []
-        for time in dict["destinationAddressList"]:
-            destinationAddressList.append(time.__dict__)
+        for item in dict["destinationAddressList"]:
+            destinationAddressList.append(item.__dict__)
         dict["destinationAddressList"] = destinationAddressList
         return dict
 
@@ -263,8 +260,8 @@ class TransactionsFeeRateRequest:
     def asDict(self):
         dict = self.__dict__
         destinationAddressList = []
-        for time in dict["destinationAddressList"]:
-            destinationAddressList.append(time.__dict__)
+        for item in dict["destinationAddressList"]:
+            destinationAddressList.append(item.__dict__)
         dict["destinationAddressList"] = destinationAddressList
         return dict
 

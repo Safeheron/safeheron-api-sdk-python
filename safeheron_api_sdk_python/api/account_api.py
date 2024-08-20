@@ -1,6 +1,3 @@
-import sys
-
-sys.path.pop(0)
 from safeheron_api_sdk_python.client import *
 
 
@@ -19,12 +16,16 @@ class ListAccountRequest:
         self.namePrefix = None
         # Filter the response based on this account name suffix
         self.nameSuffix = None
+        # Merchant unique business ID (100 characters max)
+        self.customerRefId = None
 
 
 class OneAccountRequest:
     def __init__(self):
         # Wallet account key
         self.accountKey = None
+        # Merchant unique business ID (100 characters max)
+        self.customerRefId = None
 
 
 
@@ -32,6 +33,9 @@ class CreateAccountRequest:
     def __init__(self):
         # Account name, within 30 characters
         self.accountName = None
+        # Merchant unique business ID (100 characters max)
+        # The customerRefId uniquely represents a wallet. In the case of duplicate customerRefId values (for example, when resubmitting due to request timeouts or other errors), the data returned by the interface will remain consistent
+        self.customerRefId = None
         # 	Whether display in Safeheron Console
         # True: not display
         # False: display

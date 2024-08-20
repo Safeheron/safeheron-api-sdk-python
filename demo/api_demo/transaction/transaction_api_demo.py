@@ -15,7 +15,7 @@ class TestTransaction:
     def test_create_transactions(self):
         config = read_yaml("./config.yaml")
         transaction_api = TransactionApi(config)
-        param = RecreateTransactionRequest()
+        param = CreateTransactionRequest()
 
         param.coinKey = "ETH_GOERLI"
         param.txAmount = "0.00002"

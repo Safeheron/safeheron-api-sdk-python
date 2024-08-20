@@ -1,6 +1,3 @@
-import sys
-
-sys.path.pop(0)
 from safeheron_api_sdk_python.client import *
 
 
@@ -13,6 +10,9 @@ class CreateWeb3AccountRequest:
         # False: display
         # Default: false
         self.hiddenOnUI = None
+        # Merchant unique business ID (100 characters max)
+        # The customerRefId uniquely represents a wallet. In the case of duplicate customerRefId values (for example, when resubmitting due to request timeouts or other errors), the data returned by the interface will remain consistent
+        self.customerRefId = None
 
 
 class BatchCreateWeb3AccountRequest:
@@ -33,6 +33,8 @@ class ListWeb3AccountRequest:
         self.fromId = None
         # Filter the response based on this account name prefix
         self.namePrefix = None
+        # Merchant unique business ID (100 characters max)
+        self.customerRefId = None
 
 
 class CreateWeb3EthSignRequest:

@@ -3,14 +3,14 @@ from setuptools import find_packages
 with open("README.rst", "r") as f:
     long_description = f.read()
 setup(name='safeheron_api_sdk_python',
-      version='1.1.7',
+      version='1.1.8',
       description='Python for Safeheron API',
       long_description=long_description,
       author='safeheron',
       author_email='support@safeheron.com',
       url='https://github.com/Safeheron/safeheron-api-sdk-python',
       install_requires=[
-            'pycryptodome',
+            'pycryptodomex',
             'requests',
             'cryptography'
       ],
