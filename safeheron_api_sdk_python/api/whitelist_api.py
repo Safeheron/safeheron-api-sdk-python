@@ -79,7 +79,7 @@ class DeleteWhitelistRequest:
         self.whitelistKey = None
 
 
-class AccountApi:
+class WhitelistApi:
 
     def __init__(self, config):
         self.api_client = Client(config)

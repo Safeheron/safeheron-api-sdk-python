@@ -18,7 +18,7 @@ class ResendFailedRequest:
         self.endTime = None
 
 
-class AccountApi:
+class WebhookApi:
 
     def __init__(self, config):
         self.api_client = Client(config)
