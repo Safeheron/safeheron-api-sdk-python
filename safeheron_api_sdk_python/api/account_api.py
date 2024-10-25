@@ -82,8 +82,8 @@ class BatchUpdateAccountTagRequest:
 
 class CreateAccountCoinRequest:
     def __init__(self):
-        # Coin key
-        self.coinKey = None
+        # Coin key list, 20 array elements max
+        self.coinKeyList = None
         # Account key
         self.accountKey = None
 
@@ -114,6 +114,8 @@ class ListAccountCoinAddressRequest:
         self.coinKey = None
         # Account key
         self.accountKey = None
+        # Merchant unique business ID (100 characters max) when adding an address group
+        self.customerRefId = None
 
 
 class InfoAccountCoinAddressRequest:
@@ -140,6 +142,9 @@ class CreateAccountCoinAddressRequest:
         self.accountKey = None
         # Address group name, 30 characters max
         self.addressGroupName = None
+        # Merchant unique business ID (100 characters max)
+        # The customerRefId uniquely represents an address group. In the case of duplicate customerRefId values (for example, when resubmitting due to request timeouts or other errors), the data returned by the interface will remain consistent
+        self.customerRefId = None
 
 
 class BatchCreateAccountCoinUTXORequest:
@@ -194,11 +199,16 @@ class AccountApi:
     def batch_update_account_tag(self, request: BatchUpdateAccountTagRequest):
         return self.api_client.send_request(request, '/v1/account/batch/update/tag')
 
-    # Add Coins to a Wallet Account
+    # Add Coins to a Wallet Account V1
     # Add a new coin to your wallet account, while generating the default address group for the added coin. Once successfully completed, it will return the address information of the newly created default address group. In case the added currency already exists within the account, it will promptly return the existing default address group information for that coin.
     # In a wallet account, UTXO-based cryptocurrencies can have multiple address groups, while other types of cryptocurrencies usually have only one. To check whether a particular cryptocurrency supports the addition of multiple address groups, simply check the 'isMultipleAddress' parameter through the Coin List.
     def create_account_coin(self, request: CreateAccountCoinRequest):
         return self.api_client.send_request(request, '/v1/account/coin/create')
+
+    # Add Coins to a Wallet Account V2
+    # Add a new coin to your wallet account, and it will generate address information for the added coin. If the added currency already exists within the account, it will promptly return the existing address information for that coin.
+    def create_account_coin_v2(self, request: CreateAccountCoinRequest):
+        return self.api_client.send_request(request, '/v2/account/coin/create')
 
     # Batch Add Coins to Wallet Accounts
     # Bulk addition of specified coins to designated wallet accounts. And, it creates a default address group for each coin and returns the address information contained within the newly created default address group. If a wallet account already contains the currency being added, the function will return the default address group data for that existing coin.
@@ -228,10 +238,15 @@ class AccountApi:
     def rename_account_coin_address(self, request: RenameAccountCoinAddressRequest):
         return self.api_client.send_request(request, '/v1/account/coin/address/name')
 
-    # Add Address Group for UTXO-Based Coin
+    # Add Address Group for UTXO-Based Coin V1
     # Add a new address group for UTXO-based cryptocurrencies under a wallet account. If the coin does not exist, it will be added first, followed by the new address group. The function will return the details of the added address(es).
     def create_account_coin_address(self, request: CreateAccountCoinAddressRequest):
         return self.api_client.send_request(request, '/v1/account/coin/address/create')
+
+    # Add Address Group for UTXOs V2
+    # Add a new address group for UTXO-based cryptocurrencies under a wallet account.If the coin has not been added to the wallet, it will be added automatically.
+    def create_account_coin_address_v2(self, request: CreateAccountCoinAddressRequest):
+        return self.api_client.send_request(request, '/v2/account/coin/address/create')
 
     # Batch Add Address Groups for UTXO-Based Coin
     # For UTXO-based coins in a wallet account, it is possible to add multiple address groups to the account in bulk by specifying the wallet account and the desired number of address groups. The function will return the details of the added address groups. If the specified coin does not exist in the account, it will be added first, followed by the addition of the corresponding number of address groups.
