@@ -82,6 +82,13 @@ class BatchUpdateAccountTagRequest:
 
 class CreateAccountCoinRequest:
     def __init__(self):
+        # Coin key
+        self.coinKey = None
+        # Account key
+        self.accountKey = None
+
+class CreateAccountCoinRequestV2:
+    def __init__(self):
         # Coin key list, 20 array elements max
         self.coinKeyList = None
         # Account key
@@ -207,7 +214,7 @@ class AccountApi:
 
     # Add Coins to a Wallet Account V2
     # Add a new coin to your wallet account, and it will generate address information for the added coin. If the added currency already exists within the account, it will promptly return the existing address information for that coin.
-    def create_account_coin_v2(self, request: CreateAccountCoinRequest):
+    def create_account_coin_v2(self, request: CreateAccountCoinRequestV2):
         return self.api_client.send_request(request, '/v2/account/coin/create')
 
     # Batch Add Coins to Wallet Accounts
