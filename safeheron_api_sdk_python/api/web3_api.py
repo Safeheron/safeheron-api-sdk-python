@@ -49,6 +49,10 @@ class CreateWeb3EthSignRequest:
         self.customerExt1 = None
         # Merchant extended field (defined by merchant) shown to merchant (255 characters max)
         self.customerExt2 = None
+        # Use custom network
+        # False: Use the network supported by Safeheron by default
+        # True: Use a custom network added through the Safeheron Browser Extension
+        self.useCustomNetwork = None
         # Message Hash
         self.messageHash = self.MessageHash()
 
@@ -77,6 +81,10 @@ class CreateWeb3PersonalSignRequest:
         self.customerExt1 = None
         # Merchant extended field (defined by merchant) shown to merchant (255 characters max)
         self.customerExt2 = None
+        # Use custom network
+        # False: Use the network supported by Safeheron by default
+        # True: Use a custom network added through the Safeheron Browser Extension
+        self.useCustomNetwork = None
         # Message Hash
         self.message = self.Message()
 
@@ -105,6 +113,10 @@ class CreateWeb3EthSignTypedDataRequest:
         self.customerExt1 = None
         # Merchant extended field (defined by merchant) shown to merchant (255 characters max)
         self.customerExt2 = None
+        # Use custom network
+        # False: Use the network supported by Safeheron by default
+        # True: Use a custom network added through the Safeheron Browser Extension
+        self.useCustomNetwork = None
         # Message Hash
         self.message = self.Message()
 
@@ -135,6 +147,10 @@ class CreateWeb3EthSignTransactionRequest:
         self.customerExt1 = None
         # Merchant extended field (defined by merchant) shown to merchant (255 characters max)
         self.customerExt2 = None
+        # Use custom network
+        # False: Use the network supported by Safeheron by default
+        # True: Use a custom network added through the Safeheron Browser Extension
+        self.useCustomNetwork = None
         # Transaction
         self.transaction = self.Transaction()
 

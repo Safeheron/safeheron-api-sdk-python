@@ -41,6 +41,12 @@ class ListTransactionsV1Request:
         self.realDestinationAccountType = None
         # Filter out custom transaction amounts, excluding transaction records below a certain amount specified in USD from the query results
         self.hideSmallAmountUsd = None
+        # Filter transaction history by transaction direction:
+        # Default: Retrieve all types of transactions
+        # INFLOW: Retrieve inflows
+        # OUTFLOW: Retrieve outflows
+        # INTERNAL_TRANSFER: Retrieve internal transfers
+        self.transactionDirection = None
 
 
 class ListTransactionsV2Request:
@@ -85,6 +91,12 @@ class ListTransactionsV2Request:
         self.realDestinationAccountType = None
         # Filter out custom transaction amounts, excluding transaction records below a certain amount specified in USD from the query results
         self.hideSmallAmountUsd = None
+        # Filter transaction history by transaction direction:
+        # Default: Retrieve all types of transactions
+        # INFLOW: Retrieve inflows
+        # OUTFLOW: Retrieve outflows
+        # INTERNAL_TRANSFER: Retrieve internal transfers
+        self.transactionDirection = None
 
 
 class CreateTransactionRequest:
