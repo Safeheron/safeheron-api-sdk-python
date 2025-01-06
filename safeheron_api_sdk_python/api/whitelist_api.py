@@ -139,7 +139,7 @@ class WhitelistApi:
     # The transaction is in a completed state as COMPLETED.
     # The transaction's destination address is a one-time address.
     def create_from_transaction_whitelist(self, request: CreateFromTransactionWhitelistRequest):
-        return self.api_client.send_request(request, '/v1/whitelist/create')
+        return self.api_client.send_request(request, '/v1/whitelist/createFromTransaction')
 
     # Modify a Whitelist
     # Modify a whitelist based on its unique identifier. The whitelist only supports modifying its name and address; whitelists pending for approval cannot be modified. After modifying the whitelist, it needs to be reviewed and approved in the Safeheron App before it becomes effective. The approval details are as follows:
