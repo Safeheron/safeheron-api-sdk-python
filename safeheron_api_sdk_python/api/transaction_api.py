@@ -137,6 +137,10 @@ class CreateTransactionRequest:
         self.destinationAccountType = None
         # If the destinationAccountType is ONE_TIME_ADDRESS, then this field should have a value
         self.destinationAddress = None
+        # The memo (up to 100 characters) for the destination address, also known as a comment or tag. This parameter is valid for transactions on the following networks:
+        # TON: TON mainnet
+        # TON_TESTNET: TON testnet
+        self.memo = None
         # Destination Tag
         self.destinationTag = None
         # Bitcoin enabled for RBF (Replace-by-fee is a protocol in the Bitcoin mempool that allows for the replacement of an unconfirmed transaction with another one)
