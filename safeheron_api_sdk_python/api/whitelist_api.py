@@ -41,7 +41,6 @@ class OneWhitelistRequest:
         self.address = None
 
 
-
 class CreateWhitelistRequest:
     def __init__(self):
         # Whitelist unique name, 20 characters max
@@ -61,6 +60,33 @@ class CreateWhitelistRequest:
         self.chainType = None
         # Public blockchain address and the address format needs to meet the requirements of the chain
         self.address = None
+        #  The memo (up to 20 characters) for the destination address, also known as a comment or tag. For the following networks, if a destination address memo was set initially, a memo matching the one in the transaction record must be provided
+        #  TON: TON mainnet
+        #  TON_TESTNET: TON testnet
+        self.memo = None
+        # Visibility status in Safeheron App and Web Console
+        # False: Visible by default
+        # True: Invisible; the invisible whitelist can only be managed and used through the API, such as querying, modifying, and using the whitelist as the destination address when initiating transactions
+        self.hiddenOnUI = None
+
+
+class CreateFromTransactionWhitelistRequest:
+    def __init__(self):
+        # Whitelist unique name, 20 characters max
+        self.whitelistName = None
+        # Transaction key
+        self.txKey = None
+        # The destination address in the transaction record; case-sensitive
+        self.destinationAddress = None
+        #  The memo (up to 20 characters) for the destination address, also known as a comment or tag. For the following networks, if a destination address memo was set initially, a memo matching the one in the transaction record must be provided
+        #  TON: TON mainnet
+        #  TON_TESTNET: TON testnet
+        self.memo = None
+        # Visibility status in Safeheron App and Web Console
+        # False: Visible by default
+        # True: Invisible; the invisible whitelist can only be managed and used through the API, such as querying, modifying, and using the whitelist as the destination address when initiating transactions
+        self.hiddenOnUI = None
+
 
 class EditWhitelistRequest:
     def __init__(self):
@@ -70,8 +96,13 @@ class EditWhitelistRequest:
         self.whitelistName = None
         # Public blockchain address and the address format needs to meet the requirements of the chain
         self.address = None
+        #  The memo (up to 20 characters) for the destination address, also known as a comment or tag. For the following networks, if a destination address memo was set initially, a memo matching the one in the transaction record must be provided
+        #  TON: TON mainnet
+        #  TON_TESTNET: TON testnet
+        self.memo = None
         # When the whitelist is involved in a transaction approval policy, modifications will result in the new whitelist being directly applied to the approval policy. False by default, meaning that when involved in a transaction approval policy, it will not be modified.
         self.force = None
+
 
 class DeleteWhitelistRequest:
     def __init__(self):
@@ -101,6 +132,15 @@ class WhitelistApi:
     def create_whitelist(self, request: CreateWhitelistRequest):
         return self.api_client.send_request(request, '/v1/whitelist/create')
 
+    # Create a Whitelist Based on a Transaction
+    # Whitelist the transaction's destination address when the transaction meets the following conditions:
+    #
+    # A transfer transaction from an asset wallet; Web3 wallet transactions or MPC Sign transactions are not supported.
+    # The transaction is in a completed state as COMPLETED.
+    # The transaction's destination address is a one-time address.
+    def create_from_transaction_whitelist(self, request: CreateFromTransactionWhitelistRequest):
+        return self.api_client.send_request(request, '/v1/whitelist/createFromTransaction')
+
     # Modify a Whitelist
     # Modify a whitelist based on its unique identifier. The whitelist only supports modifying its name and address; whitelists pending for approval cannot be modified. After modifying the whitelist, it needs to be reviewed and approved in the Safeheron App before it becomes effective. The approval details are as follows:
     # Admin approval: If a custom whitelist approval process is not set, it will become effective after being approved by the team admins according to the team's decision-making process.
@@ -112,5 +152,3 @@ class WhitelistApi:
     # To delete a whitelisted address, note that no approval is required for deletion. If a whitelisted address that is under approval is deleted, the approval task will also be automatically cancelled.
     def delete_whitelist(self, request: DeleteWhitelistRequest):
         return self.api_client.send_request(request, '/v1/whitelist/delete')
-
-
