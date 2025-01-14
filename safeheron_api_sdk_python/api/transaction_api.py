@@ -255,6 +255,11 @@ class OneTransactionsRequest:
         # Merchant unique business ID (100 characters max)
         self.customerRefId = None
 
+class ApprovalDetailTransactionsRequest:
+    def __init__(self):
+        # Transaction key list within 20 transaction keys
+        self.txKeyList = None
+
 
 class TransactionsFeeRateRequest:
     def __init__(self):
@@ -360,6 +365,11 @@ class TransactionApi:
     # To query a transaction, either customerRefId or txKey are required. If both values are provided, the retrieval will be based on the txKey.
     def one_transactions(self, request: OneTransactionsRequest):
         return self.api_client.send_request(request, '/v1/transactions/one')
+
+    # Retrieve Transaction Approval Details
+    # Query approval details of a transaction. Exclusively for transactions using the new advanced transaction policy. Learn more about new advanced transaction policies.
+    def approval_detail_transactions(self, request: ApprovalDetailTransactionsRequest):
+        return self.api_client.send_request(request, '/v1/transactions/approvalDetail')
 
     # Estimate Transaction Fee
     # This interface provides users with an estimated range of transaction fee rates of a given cryptocurrency when creating or speeding up transactions.
