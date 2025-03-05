@@ -3,7 +3,7 @@ from setuptools import find_packages
 with open("README.rst", "r") as f:
     long_description = f.read()
 setup(name='safeheron_api_sdk_python',
-      version='1.1.12',
+      version='1.1.13',
       description='Python for Safeheron API',
       long_description=long_description,
       author='safeheron',

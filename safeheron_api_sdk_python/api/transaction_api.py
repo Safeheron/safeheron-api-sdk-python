@@ -350,6 +350,12 @@ class TransactionApi:
         request.asDict()
         return self.api_client.send_request(request, '/v2/transactions/create')
 
+    # Create a new transaction.
+    
+    def create_transactions_v3(self, request: CreateTransactionRequest):
+        request.asDict()
+        return self.api_client.send_request(request, '/v3/transactions/create')
+
     # For UTXOs that natively support multiple OUTPUTs, this interface allows a single transaction to transfer funds to multiple destination addresses simultaneously.(To use the Co-Signer, please use version 1.5.9 or higher)
     def create_transactions_UTXO_multiDest(self, request: CreateTransactionsUTXOMultiDestRequest):
         request.asDict()
