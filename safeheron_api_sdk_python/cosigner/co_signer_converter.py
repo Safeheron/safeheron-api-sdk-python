@@ -65,6 +65,28 @@ class CoSignerConverter:
 
         return json.loads(r.decode())
 
+    def request_convert_v3(self, co_signer_call_back):
+        platform_rsa_pk = get_rsa_key(PEM_PUBLIC_HEAD + self.api_pub_key + PEM_PUBLIC_END)
+        required_keys = {
+            'version',
+            'sig',
+            'bizContent',
+            'timestamp',
+        }
+
+        missing_keys = required_keys.difference(co_signer_call_back.keys())
+        if missing_keys:
+            raise Exception(co_signer_call_back)
+
+        sig = co_signer_call_back.pop('sig')
+
+        need_sign_message = sort_request(co_signer_call_back)
+        v = rsa_pass_verify(platform_rsa_pk, need_sign_message, sig)
+        if not v:
+            raise Exception("rsa verify: false")
+        return json.loads(b64decode(co_signer_call_back['bizContent']).decode())
+
+
     # It has been Deprecated,Please use convertCoSignerResponseWithNewCryptoType
     def response_converter(self, co_signer_response: CoSignerResponse):
         platform_rsa_pk = get_rsa_key(PEM_PUBLIC_HEAD + self.api_pub_key + PEM_PUBLIC_END)

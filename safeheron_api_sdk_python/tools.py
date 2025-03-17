@@ -8,6 +8,7 @@ from Cryptodome.Cipher import PKCS1_v1_5 as Cipher_pkcs1_v1_5
 from Cryptodome.Hash import SHA256, SHA1
 from Cryptodome import Random
 from Crypto.Cipher import PKCS1_OAEP
+from Cryptodome.Signature import pss
 import json
 import time
 import requests
@@ -154,6 +155,16 @@ def rsa_verify(public_key, message_hash: bytes, signature):
         digest = SHA256.new()
         digest.update(message_hash)
         return signer.verify(digest, b64decode(signature))
+    except Exception as e:
+        raise Exception("rsa sign error: %s" % e)
+
+def rsa_pass_verify(public_key, message_hash: bytes, signature):
+    try:
+        verifier = pss.new(public_key)
+        digest = SHA256.new()
+        digest.update(message_hash)
+        verifier.verify(digest, b64decode(signature))
+        return True
     except Exception as e:
         raise Exception("rsa sign error: %s" % e)
 
