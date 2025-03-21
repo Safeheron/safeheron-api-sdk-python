@@ -148,6 +148,16 @@ def rsa_sign(private_key, message_hash: bytes):
     except Exception as e:
         raise Exception("rsa sign error: %s" % e)
 
+def rsa_pss_sign(private_key, message_hash: bytes):
+    try:
+        signer = pss.new(private_key)
+        digest = SHA256.new()
+        digest.update(message_hash)
+        signed = signer.sign(digest)
+        return b64encode(signed).decode()
+    except Exception as e:
+        raise Exception("rsa sign error: %s" % e)
+
 
 def rsa_verify(public_key, message_hash: bytes, signature):
     try:

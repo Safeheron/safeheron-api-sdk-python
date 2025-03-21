@@ -9,6 +9,14 @@ class CoSignerResponse:
         self.txKey = None
 
 
+class CoSignerResponseV3:
+    def __init__(self):
+        # approve
+        self.action = None
+        # txKey
+        self.approvalId = None
+
+
 class CoSignerConverter:
 
     def __init__(self, config):
@@ -149,4 +157,22 @@ class CoSignerConverter:
         ret['sig'] = rsa_sign(api_user_rsa_sk, need_sign_message)
         ret['rsaType'] = ECB_OAEP_TYPE
         ret['aesType'] = GCM_TYPE
+        return ret
+
+    def response_converter_v3(self, co_signer_response: CoSignerResponseV3):
+        api_user_rsa_sk = get_rsa_key(self.biz_privKey)
+        ret = dict()
+        response_data = json.dumps(co_signer_response.__dict__).replace('\'', '\"').replace('\n', '').encode('utf-8')
+
+        if response_data is not None:
+            ret['bizContent'] = b64encode(response_data).decode()
+
+        ret['timestamp'] = str(int(time.time() * 1000))
+        ret['code'] = str('200')
+        ret['version'] = str('v3')
+        ret['message'] = str('SUCCESS')
+
+        # 4 sign request
+        need_sign_message = sort_request(ret)
+        ret['sig'] = rsa_pss_sign(api_user_rsa_sk, need_sign_message)
         return ret
