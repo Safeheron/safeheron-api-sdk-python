@@ -11,9 +11,9 @@ class CoSignerResponse:
 
 class CoSignerResponseV3:
     def __init__(self):
-        # approve
+        # action
         self.action = None
-        # txKey
+        # approvalId
         self.approvalId = None
 
 
