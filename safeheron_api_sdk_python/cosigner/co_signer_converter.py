@@ -20,15 +20,15 @@ class CoSignerResponseV3:
 class CoSignerConverter:
 
     def __init__(self, config):
-        self.api_pub_key = config['apiPubKey']
-        if config.get('bizPrivKey'):
-            self.biz_privKey = PEM_PRIVATE_HEAD + config['bizPrivKey'] + PEM_PRIVATE_END
-        if config.get('bizPrivKeyPemFile'):
-            self.biz_privKey = load_rsa_private_key(config['bizPrivKeyPemFile'])
+        self.co_signer_pub_key = config['coSignerPubKey']
+        if config.get('approvalCallbackServicePrivateKey'):
+            self.approval_callback_service_private_key = PEM_PRIVATE_HEAD + config['approvalCallbackServicePrivateKey'] + PEM_PRIVATE_END
+        if config.get('approvalCallbackServicePrivateKeyPemFile'):
+            self.approval_callback_service_private_key = load_rsa_private_key(config['approvalCallbackServicePrivateKeyPemFile'])
 
     def request_convert(self, co_signer_call_back):
-        platform_rsa_pk = get_rsa_key(PEM_PUBLIC_HEAD + self.api_pub_key + PEM_PUBLIC_END)
-        api_user_rsa_sk = get_rsa_key(self.biz_privKey)
+        platform_rsa_pk = get_rsa_key(PEM_PUBLIC_HEAD + self.co_signer_pub_key + PEM_PUBLIC_END)
+        api_user_rsa_sk = get_rsa_key(self.approval_callback_service_private_key)
         required_keys = {
             'key',
             'sig',
@@ -74,7 +74,7 @@ class CoSignerConverter:
         return json.loads(r.decode())
 
     def request_convert_v3(self, co_signer_call_back):
-        platform_rsa_pk = get_rsa_key(PEM_PUBLIC_HEAD + self.api_pub_key + PEM_PUBLIC_END)
+        platform_rsa_pk = get_rsa_key(PEM_PUBLIC_HEAD + self.co_signer_pub_key + PEM_PUBLIC_END)
         required_keys = {
             'version',
             'sig',
@@ -97,8 +97,8 @@ class CoSignerConverter:
 
     # It has been Deprecated,Please use convertCoSignerResponseWithNewCryptoType
     def response_converter(self, co_signer_response: CoSignerResponse):
-        platform_rsa_pk = get_rsa_key(PEM_PUBLIC_HEAD + self.api_pub_key + PEM_PUBLIC_END)
-        api_user_rsa_sk = get_rsa_key(self.biz_privKey)
+        platform_rsa_pk = get_rsa_key(PEM_PUBLIC_HEAD + self.co_signer_pub_key + PEM_PUBLIC_END)
+        api_user_rsa_sk = get_rsa_key(self.approval_callback_service_private_key)
 
         ret = dict()
 
@@ -128,8 +128,8 @@ class CoSignerConverter:
         return ret
 
     def response_converter_with_new_crypto_type(self, co_signer_response: CoSignerResponse):
-        platform_rsa_pk = get_rsa_key(PEM_PUBLIC_HEAD + self.api_pub_key + PEM_PUBLIC_END)
-        api_user_rsa_sk = get_rsa_key(self.biz_privKey)
+        platform_rsa_pk = get_rsa_key(PEM_PUBLIC_HEAD + self.co_signer_pub_key + PEM_PUBLIC_END)
+        api_user_rsa_sk = get_rsa_key(self.approval_callback_service_private_key)
 
         ret = dict()
 
@@ -160,7 +160,7 @@ class CoSignerConverter:
         return ret
 
     def response_converter_v3(self, co_signer_response: CoSignerResponseV3):
-        api_user_rsa_sk = get_rsa_key(self.biz_privKey)
+        api_user_rsa_sk = get_rsa_key(self.approval_callback_service_private_key)
         ret = dict()
         response_data = json.dumps(co_signer_response.__dict__).replace('\'', '\"').replace('\n', '').encode('utf-8')
 
