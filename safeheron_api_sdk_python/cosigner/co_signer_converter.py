@@ -20,11 +20,18 @@ class CoSignerResponseV3:
 class CoSignerConverter:
 
     def __init__(self, config):
-        self.co_signer_pub_key = config['coSignerPubKey']
-        if config.get('approvalCallbackServicePrivateKey'):
-            self.approval_callback_service_private_key = PEM_PRIVATE_HEAD + config['approvalCallbackServicePrivateKey'] + PEM_PRIVATE_END
-        if config.get('approvalCallbackServicePrivateKeyPemFile'):
-            self.approval_callback_service_private_key = load_rsa_private_key(config['approvalCallbackServicePrivateKeyPemFile'])
+        # Supports both coSignerPubKey and apiPublKey
+        self.co_signer_pub_key = config.get('coSignerPubKey') or config.get('apiPubKey')
+
+        # Supports both approvalCallbackServicePrivateKey and bizPrivKey
+        private_key = config.get('approvalCallbackServicePrivateKey') or config.get('bizPrivKey')
+        if private_key:
+            self.approval_callback_service_private_key = PEM_PRIVATE_HEAD + private_key + PEM_PRIVATE_END
+
+        # Supports both approvalCallbackServicePrivateKeyPemFile and bizPrivKeyPemFile
+        pem_file = config.get('approvalCallbackServicePrivateKeyPemFile') or config.get('bizPrivKeyPemFile')
+        if pem_file:
+            self.approval_callback_service_private_key = load_rsa_private_key(pem_file)
 
     def request_convert(self, co_signer_call_back):
         platform_rsa_pk = get_rsa_key(PEM_PUBLIC_HEAD + self.co_signer_pub_key + PEM_PUBLIC_END)
