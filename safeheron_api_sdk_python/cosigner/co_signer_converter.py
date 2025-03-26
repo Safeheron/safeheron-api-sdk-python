@@ -101,6 +101,24 @@ class CoSignerConverter:
             raise Exception("rsa verify: false")
         return json.loads(b64decode(co_signer_call_back['bizContent']).decode())
 
+    def response_v3_converter(self, co_signer_response: CoSignerResponseV3):
+        api_user_rsa_sk = get_rsa_key(self.approval_callback_service_private_key)
+        ret = dict()
+        response_data = json.dumps(co_signer_response.__dict__).replace('\'', '\"').replace('\n', '').encode('utf-8')
+
+        if response_data is not None:
+            ret['bizContent'] = b64encode(response_data).decode()
+
+        ret['timestamp'] = str(int(time.time() * 1000))
+        ret['code'] = str('200')
+        ret['version'] = str('v3')
+        ret['message'] = str('SUCCESS')
+
+        # 4 sign request
+        need_sign_message = sort_request(ret)
+        ret['sig'] = rsa_pss_sign(api_user_rsa_sk, need_sign_message)
+        return ret
+
 
     # It has been Deprecated,Please use convertCoSignerResponseWithNewCryptoType
     def response_converter(self, co_signer_response: CoSignerResponse):
@@ -164,22 +182,4 @@ class CoSignerConverter:
         ret['sig'] = rsa_sign(api_user_rsa_sk, need_sign_message)
         ret['rsaType'] = ECB_OAEP_TYPE
         ret['aesType'] = GCM_TYPE
-        return ret
-
-    def response_v3_converter(self, co_signer_response: CoSignerResponseV3):
-        api_user_rsa_sk = get_rsa_key(self.approval_callback_service_private_key)
-        ret = dict()
-        response_data = json.dumps(co_signer_response.__dict__).replace('\'', '\"').replace('\n', '').encode('utf-8')
-
-        if response_data is not None:
-            ret['bizContent'] = b64encode(response_data).decode()
-
-        ret['timestamp'] = str(int(time.time() * 1000))
-        ret['code'] = str('200')
-        ret['version'] = str('v3')
-        ret['message'] = str('SUCCESS')
-
-        # 4 sign request
-        need_sign_message = sort_request(ret)
-        ret['sig'] = rsa_pss_sign(api_user_rsa_sk, need_sign_message)
         return ret
