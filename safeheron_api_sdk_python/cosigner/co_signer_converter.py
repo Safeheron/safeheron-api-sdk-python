@@ -80,7 +80,7 @@ class CoSignerConverter:
 
         return json.loads(r.decode())
 
-    def request_convert_v3(self, co_signer_call_back):
+    def request_v3_convert(self, co_signer_call_back):
         platform_rsa_pk = get_rsa_key(PEM_PUBLIC_HEAD + self.co_signer_pub_key + PEM_PUBLIC_END)
         required_keys = {
             'version',
@@ -92,7 +92,7 @@ class CoSignerConverter:
         missing_keys = required_keys.difference(co_signer_call_back.keys())
         if missing_keys:
             raise Exception(co_signer_call_back)
-
+        co_signer_call_back['version'] = 'v3'
         sig = co_signer_call_back.pop('sig')
 
         need_sign_message = sort_request(co_signer_call_back)
@@ -166,7 +166,7 @@ class CoSignerConverter:
         ret['aesType'] = GCM_TYPE
         return ret
 
-    def response_converter_v3(self, co_signer_response: CoSignerResponseV3):
+    def response_v3_converter(self, co_signer_response: CoSignerResponseV3):
         api_user_rsa_sk = get_rsa_key(self.approval_callback_service_private_key)
         ret = dict()
         response_data = json.dumps(co_signer_response.__dict__).replace('\'', '\"').replace('\n', '').encode('utf-8')
