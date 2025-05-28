@@ -31,7 +31,7 @@ class OneAccountRequest:
 
 class CreateAccountRequest:
     def __init__(self):
-        # Account name, within 30 characters
+        # Account name, 50 characters max
         self.accountName = None
         # Merchant unique business ID (100 characters max)
         # The customerRefId uniquely represents a wallet. In the case of duplicate customerRefId values (for example, when resubmitting due to request timeouts or other errors), the data returned by the interface will remain consistent
@@ -49,7 +49,7 @@ class CreateAccountRequest:
 
 class BatchCreateAccountRequest:
     def __init__(self):
-        # The prefix of wallet account name, 30 characters max
+        # The prefix of wallet account name, 50 characters max
         self.accountName = None
         # Display status in Safeheron App
         # True: not display
@@ -160,9 +160,9 @@ class BatchCreateAccountCoinUTXORequest:
         self.coinKey = None
         # Account key
         self.accountKey = None
-        # Address group name, 30 characters max
-        self.count = None
         # The number, max is 100
+        self.count = None
+        # Address group name, 30 characters max
         self.addressGroupName = None
 
 

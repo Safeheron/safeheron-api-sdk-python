@@ -3,7 +3,7 @@ from safeheron_api_sdk_python.client import *
 
 class CreateWeb3AccountRequest:
     def __init__(self):
-        # Account name, within 30 characters
+        # Account name, 50 characters max
         self.accountName = None
         # 	Whether display in Safeheron Console
         # True: not display
@@ -17,10 +17,15 @@ class CreateWeb3AccountRequest:
 
 class BatchCreateWeb3AccountRequest:
     def __init__(self):
-        # Transaction key
-        self.txKey = None
-        # Merchant unique business ID (100 characters max)
-        self.customerRefId = None
+        # The prefix of wallet account name, 50 characters max
+        self.accountName = None
+        # 	Whether display in Safeheron Console
+        # True: not display
+        # False: display
+        # Default: false
+        self.hiddenOnUI = None
+        # Number of wallets to be created, greater than 0, less than 100
+        self.count = None
 
 
 class ListWeb3AccountRequest:
