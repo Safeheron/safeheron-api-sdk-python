@@ -132,6 +132,11 @@ class InfoAccountCoinAddressRequest:
         # Coin receiving address
         self.address = None
 
+class AccountCoinBalanceRequest:
+    def __init__(self):
+        # Coin Keys, max 10
+        self.coinKeyList = None
+
 
 class RenameAccountCoinAddressRequest:
     def __init__(self):
@@ -239,6 +244,12 @@ class AccountApi:
     # Retrieve the balance of a specific coin address.
     def info_account_coin_address(self, request: InfoAccountCoinAddressRequest):
         return self.api_client.send_request(request, '/v1/account/coin/address/info')
+
+    # Retrieve Coin Balance
+    # Get the coin balance of all asset wallets under the team.
+    def account_coin_balance(self, request: AccountCoinBalanceRequest):
+        return self.api_client.send_request(request, '/v1/account/coin/balance')
+
 
     # Rename Coin Address Group of a Wallet Account
     # Rename a coin address group of a wallet account.
