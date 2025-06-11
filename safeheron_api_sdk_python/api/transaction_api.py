@@ -147,6 +147,9 @@ class CreateTransactionRequest:
         self.isRbf = None
         # The default setting for the parameter is [true]. This parameter determines whether a transaction can be created when the target address is a smart contract. If set to [false], a transaction can still be created for a contract address
         self.failOnContract = None
+        # Default value is true. When initiating and approving transactions, Safeheron assesses the destinationAddress for risk through its AML/KYT service provider. It then decides whether to permit the transaction based on this assessment. By default, if the destination address presents compliance risks, the system prohibits the transaction.
+        # If you fully understand the associated risks and still need to transfer funds to this address, you can explicitly set failOnAml to false. In this case, Safeheron will disregard the risk assessment results and allow the transaction to proceed.
+        self.failOnAml = None
         # Custom nonce
         self.nonce = None
         # Customizable sequence number on Aptos, similar to the nonce in the EVM.
@@ -210,6 +213,9 @@ class CreateTransactionsUTXOMultiDestRequest:
         self.destinationTag = None
         # Bitcoin enabled for RBF (Replace-by-fee is a protocol in the Bitcoin mempool that allows for the replacement of an unconfirmed transaction with another one)
         self.isRbf = None
+        # Default value is true. When initiating and approving transactions, Safeheron assesses the destinationAddress for risk through its AML/KYT service provider. It then decides whether to permit the transaction based on this assessment. By default, if the destination address presents compliance risks, the system prohibits the transaction.
+        # If you fully understand the associated risks and still need to transfer funds to this address, you can explicitly set failOnAml to false. In this case, Safeheron will disregard the risk assessment results and allow the transaction to proceed.
+        self.failOnAml = None
 
     def asDict(self):
         dict = self.__dict__
