@@ -1,8 +1,9 @@
 name: Manually Publish Python Package to PyPI
+
 on:
-  push:
-    branches:
-      - main
+  release:
+    types: [ released ]
+
   workflow_dispatch:
     inputs:
       version:
