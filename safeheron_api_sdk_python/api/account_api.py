@@ -12,6 +12,15 @@ class ListAccountRequest:
         # False: retrieve displayed wallet accounts
         # Default: retrieve all wallet accounts
         self.hiddenOnUI = None
+        # Filter wallets based on autoFuel setting:
+        # Default: Ignore this query parameter
+        # true: Only query wallets where autoFuel is set to true
+        # false: Only query wallets where autoFuel is set to false
+        self.autoFuel = None
+        # Wallet's archive status in Safeheron App and Web Console
+        # True: Archived
+        # False: Unarchived
+        self.archived = None
         # Filter the response based on this account name prefix
         self.namePrefix = None
         # Filter the response based on this account name suffix
@@ -36,11 +45,13 @@ class CreateAccountRequest:
         # Merchant unique business ID (100 characters max)
         # The customerRefId uniquely represents a wallet. In the case of duplicate customerRefId values (for example, when resubmitting due to request timeouts or other errors), the data returned by the interface will remain consistent
         self.customerRefId = None
-        # 	Whether display in Safeheron Console
+        # Whether display in Safeheron Console
         # True: not display
         # False: display
         # Default: false
         self.hiddenOnUI = None
+        # Auto-refuel. If set to true, the Gas Service will automatically supplement the Gas fee for the wallet when a transaction is initiated. The default value is false
+        self.autoFuel = None
         # Account tag
         self.accountTag = None
         # Coin key list, 20 array elements max
@@ -56,6 +67,8 @@ class BatchCreateAccountRequest:
         # False: display
         # Default: true
         self.hiddenOnUI = None
+        # Auto-refuel. If set to true, the Gas Service will automatically supplement the Gas fee for the wallet when a transaction is initiated. The default value is false
+        self.autoFuel = None
         # Number of wallets to be created, greater than 0, less than 100
         self.count = None
         # Account tag
@@ -78,6 +91,13 @@ class BatchUpdateAccountTagRequest:
         self.accountKeyList = None
         # Account tag
         self.accountTag = None
+
+class BatchUpdateAccountFuelRequest:
+    def __init__(self):
+        # Account key, max is 100
+        self.accountKeyList = None
+        # If set to true, Gas Service will automatically supplement the transaction fee (Gas) for the wallet when a transaction is initiated
+        self.autoFuel = None
 
 
 class CreateAccountCoinRequest:
@@ -210,6 +230,11 @@ class AccountApi:
     # Please note that it only supports to label wallets which are created by API. And, the wallets have been used to sweep the target account cannot be relabelled.
     def batch_update_account_tag(self, request: BatchUpdateAccountTagRequest):
         return self.api_client.send_request(request, '/v1/account/batch/update/tag')
+
+    # Batch Set Auto-Fuel
+    # Set the autoFuel property for a batch of wallet accounts. Setting it to true means that the Gas Service will automatically supplement the transaction fee (Gas) for that wallet when a transaction is initiated; setting it to false means the Gas Service will no longer supplement the transaction fee for the wallet.
+    def batch_update_account_autofuel(self, request: BatchUpdateAccountFuelRequest):
+        return self.api_client.send_request(request, '/v1/account/batch/update/autofuel')
 
     # Add Coins to a Wallet Account V1
     # Add a new coin to your wallet account, while generating the default address group for the added coin. Once successfully completed, it will return the address information of the newly created default address group. In case the added currency already exists within the account, it will promptly return the existing default address group information for that coin.
