@@ -62,11 +62,8 @@ def aes_encrypt(key: bytes, iv: bytes, message: bytes):
 
 def aes_gcm_encrypt(key: bytes, iv: bytes, message: bytes):
     check_key_and_iv(key, iv)
-    try:
-        cipher = AES.new(key, AES.MODE_GCM, iv)
-        cipher_text, tag = cipher.encrypt_and_digest(message)
-    except Exception as e:
-        raise Exception("aes encrypt error: %s" % e)
+    cipher = AES.new(key, AES.MODE_GCM, iv)
+    cipher_text, tag = cipher.encrypt_and_digest(message)
     return cipher_text + tag
 
 
@@ -82,12 +79,14 @@ def aes_decrypt(key: bytes, iv: bytes, encrypt_text: bytes):
 
 def aes_gcm_decrypt(key: bytes, iv: bytes, encrypt_text: bytes):
     check_key_and_iv(key, iv)
+    if len(encrypt_text) < 16:
+        raise Exception("aes decrypt error: invalid ciphertext")
+    ciphertext, tag = encrypt_text[:-16], encrypt_text[-16:]
+    cipher = AES.new(key, AES.MODE_GCM, iv)
     try:
-        cipher = AES.new(key, AES.MODE_GCM, iv)
-        pad_text = cipher.decrypt(encrypt_text)
-    except Exception as e:
-        raise Exception("aes decrypt error: %s" % e)
-    return pad_text[0:len(pad_text)-len(iv)]
+        return cipher.decrypt_and_verify(ciphertext, tag)
+    except ValueError as exc:
+        raise Exception("aes decrypt error: tag verification failed") from exc
 
 
 def get_rsa_key(key_pem, passphrase=None):

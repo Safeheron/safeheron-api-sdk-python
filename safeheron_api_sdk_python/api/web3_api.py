@@ -41,6 +41,12 @@ class ListWeb3AccountRequest:
         # Merchant unique business ID (100 characters max)
         self.customerRefId = None
 
+class OneWeb3AccountRequest:
+    def __init__(self):
+        # Account Key, the only account identifier。The Account Key, which is the unique identifier for the account. Cannot be empty at the same time as the customerRefId parameter. If both are provided, the accountKey parameter will take precedence.
+        self.accountKey = None
+        # Merchant unique business ID (100 characters max)
+        self.customerRefId = None
 
 class CreateWeb3EthSignRequest:
     def __init__(self):
@@ -238,6 +244,11 @@ class Web3Api:
     # Filter Web3 wallet account lists by various conditions.
     def listWeb3Accounts(self, request: ListWeb3AccountRequest):
         return self.api_client.send_request(request, '/v1/web3/account/list')
+
+    # List Web3 Wallet Accounts
+    # Filter Web3 wallet account lists by various conditions.
+    def oneWeb3Account(self, request: OneWeb3AccountRequest):
+        return self.api_client.send_request(request, '/v1/web3/account/one')
 
     # Create ethSign
     # Merchants can initiate an ethSign signature through this interface. The merchant is required to serialize the transaction data, generating a corresponding hash (supporting both 0x and non-0x formatted data). The hash is then submitted through this interface to create a signature, which can be obtained by Retrieve a Single Web3 Signature interface or webhook. From there, merchants can complete the subsequent steps according to their own needs once they have obtained the signature.
