@@ -36,7 +36,10 @@ class OneAccountRequest:
         # Merchant unique business ID (100 characters max)
         self.customerRefId = None
 
-
+class OneAccountByAddressRequest:
+    def __init__(self):
+        # The wallet address. Note: Wallet addresses for the TRON, Solana, and TON networks are case-sensitive, while other networks are case-insensitive
+        self.address = None
 
 class CreateAccountRequest:
     def __init__(self):
@@ -205,6 +208,10 @@ class AccountApi:
     # Retrieve a single wallet account in the team by providing accountKey.
     def one_accounts(self, request: OneAccountRequest):
         return self.api_client.send_request(request, '/v1/account/one')
+
+    # Query Wallet Account by Address
+    def get_account_by_address(self, request: OneAccountByAddressRequest):
+        return self.api_client.send_request(request, '/v1/account/getByAddress')
 
     # Create a new wallet account.
     def create_account(self, request: CreateAccountRequest):
