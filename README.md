@@ -12,6 +12,19 @@
 $ pip install safeheron-api-sdk-python
 ```
 
+# AI-Powered Development
+
+Use the **Safeheron Skill** with Claude Code or Cursor to generate, debug, and troubleshoot Safeheron API integrations using natural language.
+
+**Example prompts:**
+- "Help me set up an API Co-Signer approval callback service"
+- "Write a Webhook handler to process incoming transaction events"
+- "What causes error 1012 and how do I fix it?"
+
+**Get started:**
+
+View the Skill source code on GitHub: [safeheron/safeheron-skill](https://github.com/safeheron/safeheron-skill)
+
 # Usage
 ```python
 from safeheron_api_sdk_python.api.account_api import *
