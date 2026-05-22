@@ -274,59 +274,6 @@ def decrypt_response(response_dict, platform_rsa_pk, api_user_rsa_sk):
 
     return json.loads(r.decode())
 
-#Used for webhook decryption callback request data
-def decrypt_request(response_dict, verify_rsa_pk, decrypt_rsa_sk):
-    verify_rsa_pk = get_rsa_key(PEM_PUBLIC_HEAD + verify_rsa_pk + PEM_PUBLIC_END)
-    decrypt_rsa_sk = get_rsa_key(decrypt_rsa_sk)
-    # 1 rsa verify
-    sig = response_dict.pop('sig')
-    need_sign_message = sort_request(response_dict)
-    v = rsa_verify(verify_rsa_pk, need_sign_message, sig)
-    if not v:
-        raise Exception("rsa verify: false")
-
-    # 2 get aes key and iv
-    aes_data = rsa_decrypt(decrypt_rsa_sk, response_dict['key'])
-    aes_key = aes_data[0:32]
-    aes_iv = aes_data[32:48]
-  
-    # 3 aes decrypt data, get response data
-    r = aes_decrypt(aes_key, aes_iv, b64decode(response_dict['bizContent']))
-
-    return json.loads(r.decode())
-
-#For webhook to send encrypted response content
-def encrypt_response(raw_data,encrpyt_rsa_pk, sign_rsa_sk):
-    encrpyt_rsa_pk = get_rsa_key(PEM_PUBLIC_HEAD + encrpyt_rsa_pk + PEM_PUBLIC_END)
-    sign_rsa_sk = get_rsa_key(sign_rsa_sk)
-    ret = dict()
-    # prepare aes key and iv
-    aes_key = get_random_bytes(32)
-    aes_iv = get_random_bytes(16)
-    res_data = json.dumps(raw_data).replace('\n', '').encode('utf-8')
-
-    # 1 rsa encrypt aes key + iv
-    aes_data = aes_key + aes_iv
-    ret['key'] = rsa_encrypt(encrpyt_rsa_pk, aes_data)
-
-    # 2 aes encrypt request data
-    aes_encrypted_bytes = aes_encrypt(aes_key, aes_iv, res_data)
-    ret['bizContent'] = b64encode(aes_encrypted_bytes).decode()
-
-    # 3 set timestamp , no need to add
-    ret['timestamp'] = str(int(time.time() * 1000))
-
-    # 4 code
-    ret['code'] = "200"
-
-    # 5 message
-    ret['message'] = "callback_ok"
-
-    # 6 sign request
-    need_sign_message = sort_request(ret)
-    ret['sig'] = rsa_sign(sign_rsa_sk, need_sign_message)
-    return ret
-
 def rsa_gen_key():
     rsa_key = RSA.generate(4096)
     sk = rsa_key.export_key()
