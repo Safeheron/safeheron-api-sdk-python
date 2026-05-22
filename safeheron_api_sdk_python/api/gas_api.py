@@ -23,5 +23,5 @@ class GasApi:
 
     # Retrieve Automatic Gas Records for Transactions
     # When the TRON energy rental service is enabled, Safeheron automatically tops up the required Gas fees for TRON network transactions. This API allows you to query the energy rental records used by a transaction. A single transaction may have multiple records. The actual Gas fee consumed by the transaction is the sum of all records with SUCCESS and FAILURE_GAS_CONSUMED statuses.
-    def gas_transactions_get_by_tx_key(self, request: GasTransactionsGetByTxKeyRequest):
+    def gas_transactions_ge_b_tx_key(self, request: GasTransactionsGetByTxKeyRequest):
         return self.api_client.send_request(request, '/v1/gas/transactions/getByTxKey')
