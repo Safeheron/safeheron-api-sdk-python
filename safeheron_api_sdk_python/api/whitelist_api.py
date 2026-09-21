@@ -68,6 +68,8 @@ class CreateWhitelistRequest:
         # False: Visible by default
         # True: Invisible; the invisible whitelist can only be managed and used through the API, such as querying, modifying, and using the whitelist as the destination address when initiating transactions
         self.hiddenOnUI = None
+        # Note
+        self.note = None
 
 
 class CreateFromTransactionWhitelistRequest:
@@ -86,6 +88,8 @@ class CreateFromTransactionWhitelistRequest:
         # False: Visible by default
         # True: Invisible; the invisible whitelist can only be managed and used through the API, such as querying, modifying, and using the whitelist as the destination address when initiating transactions
         self.hiddenOnUI = None
+        # Note
+        self.note = None
 
 
 class EditWhitelistRequest:
@@ -102,6 +106,8 @@ class EditWhitelistRequest:
         self.memo = None
         # When the whitelist is involved in a transaction approval policy, modifications will result in the new whitelist being directly applied to the approval policy. False by default, meaning that when involved in a transaction approval policy, it will not be modified.
         self.force = None
+        # Note
+        self.note = None
 
 
 class DeleteWhitelistRequest:
