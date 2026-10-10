@@ -19,6 +19,10 @@ class CheckCoinAddressRequest:
         # True: verify
         # False: not verify
         self.checkAddressValid = None
+        # Verify if the Solana address is the Owner address (If no value is provided, 'false' by default)
+        # True: Verify
+        # False: Not verify
+        self.checkSolanaOwnerAddress = None
 
 
 class CoinBalanceSnapshotRequest:
