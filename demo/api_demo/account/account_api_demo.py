@@ -21,6 +21,15 @@ class TestAccount:
         res = account_api.list_accounts(param)
         print(res)
 
+    def test_list_accounts_v2(self):
+        config = read_yaml("./config.yaml")
+        account_api = AccountApi(config)
+        param = ListAccountV2Request()
+        param.direct = "NEXT"
+        param.limit = 10
+        res = account_api.list_accounts_v2(param)
+        print(res)
+
     def test_create_account(self):
         config = read_yaml("./config.yaml")
         account_api = AccountApi(config)

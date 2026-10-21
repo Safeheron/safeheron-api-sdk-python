@@ -29,6 +29,38 @@ class ListAccountRequest:
         self.customerRefId = None
 
 
+class ListAccountV2Request:
+    def __init__(self):
+        # Query page direction, NEXT by default
+        # NEXT: ascending by accountIndex
+        # PREV: descending by accountIndex
+        self.direct = None
+        # The number of items to retrieve at a time, the default is 10, max is 100
+        self.limit = None
+        # accountKey of the first wallet account. Not required for the first page; for subsequent pages, provide the accountKey of the last record from the previous result
+        self.fromId = None
+        # Filter whether there are not-displayed wallet accounts in Safeheron Console
+        # True: retrieve hidden wallet accounts
+        # False: retrieve displayed wallet accounts
+        # Default: retrieve all wallet accounts
+        self.hiddenOnUI = None
+        # Filter wallets based on autoFuel setting:
+        # Default: Ignore this query parameter
+        # true: Only query wallets where autoFuel is set to true
+        # false: Only query wallets where autoFuel is set to false
+        self.autoFuel = None
+        # Wallet's archive status in Safeheron App and Web Console
+        # True: Archived
+        # False: Unarchived
+        self.archived = None
+        # Filter the response based on this account name prefix
+        self.namePrefix = None
+        # Filter the response based on this account name suffix
+        self.nameSuffix = None
+        # Merchant unique business ID (100 characters max)
+        self.customerRefId = None
+
+
 class OneAccountRequest:
     def __init__(self):
         # Wallet account key
@@ -203,6 +235,11 @@ class AccountApi:
     # Filter wallet account lists in team according to different combinations of conditions.
     def list_accounts(self, request: ListAccountRequest):
         return self.api_client.send_request(request, '/v1/account/list')
+
+    # List Wallet Accounts V2
+    # Filter wallet account lists in team according to different combinations of conditions, using cursor-based pagination.
+    def list_accounts_v2(self, request: ListAccountV2Request):
+        return self.api_client.send_request(request, '/v2/account/list')
 
     # Retrieve a Single Wallet Account
     # Retrieve a single wallet account in the team by providing accountKey.
